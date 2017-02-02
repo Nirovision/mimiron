@@ -1,0 +1,12 @@
+*.py[cod]
+__pycache__
+.coverage
+
+build/
+dist/
+src/
+
+bling.json
+
+*.egg-info/
+.idea/
