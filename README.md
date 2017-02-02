@@ -8,9 +8,9 @@ Mimiron a CLI tool whose purpose is to be the glue between your tfvars and Terra
 
 When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.tfvars` file and pass that along when you run `terraform apply -var-file=variables.tf`... but where do you store `variables.tfvars`?
 
-Our MVP approach is to store variables inside a separate git repository. Then, inside the Terraform deployments repo, create a link between the two via `git submodules`, making sure specifying the commit SHA.
+Our MVP approach is to store variables inside a separate git repository. Inside the Terraform deployments repo, create a link between the two via `git submodules`, making sure to specify the commit SHA.
 
-This approach is super simple and works but it can be quite cumbersome to when you want to make updates. Mimiron provides a few commands to help automate the cumbersome tasks away.
+This approach is super simple and works but it can be quite cumbersome when you want to make updates. Mimiron provides a few commands to help automate the cumbersome tasks away.
 
 ## Installation
 
@@ -55,8 +55,8 @@ options:
 Example workflow:
 
 ```
-$ mim update service website staging
-$ mim update sha
+$ mim up app website staging
+$ mim up sha
 ```
 
 ## Development
