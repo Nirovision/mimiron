@@ -1,0 +1,7 @@
+language: python
+install:
+- make install
+script:
+- make pep
+- python setup.py develop
+- mim
