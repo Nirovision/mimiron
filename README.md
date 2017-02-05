@@ -23,8 +23,11 @@ $ pip install mimiron
 You also need to specify a few environment variables to let Mimiron know where your terraform and tfvar repos are located:
 
 ```bash
-export TF_REPO_PATH=~/worksapce/terraform-deployments/
-export TF_VAR_REPO_PATH=~/workspace/tfvars/
+export TF_DEPLOYMENT_PATH="~/workspace/terraform"
+export TF_VARS_STAGING_PATH="~/workspace/tfvars-staging"
+export TF_VARS_PRODUCTION_PATH="~/workspace/tfvars-prod"
+export DOCKER_USERNAME=""
+export DOCKER_PASSWORD=""
 ```
 
 ## Usage
