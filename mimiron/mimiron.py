@@ -30,16 +30,26 @@ from . import __version__
 from docopt import docopt
 
 import config
-from .core.io import err, ok, info, warn
+from .core.commands import commit, deploy, fast_deploy
+from .core.io import err
 from .domain import BaseMimironException
 
 
 def _parse_user_input(args):
-    print(args)
-    err('we have an issue')
-    warn('we might have an issue')
-    info('things are doing stuff')
-    ok('that was successful')
+    env = args['<environment>']
+
+    if args['fast-deploy']:
+        return fast_deploy.FastDeploy(
+            environment=env,
+            artifact=args['<artifact>'],
+            service=args['<service>']
+        )
+    if args['deploy']:
+        should_push = not args['--no-push']
+        return deploy.Deploy(environment=env, should_push=should_push)
+    if args['commit']:
+        return commit.Commit(environment=env)
+    err('encountered unexpected mim command')
 
 
 def main():
