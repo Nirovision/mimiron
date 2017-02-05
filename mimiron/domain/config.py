@@ -9,8 +9,8 @@ class DeploymentRepoNotFound(BaseMimironException):
 
 
 class TFVarsRepoNotFound(BaseMimironException):
-    def __init__(self, environ):
-        message = '"%s" environment repository not specified' % environ
+    def __init__(self, env):
+        message = '"%s" environment repository not specified' % env
         super(self.__class__, self).__init__(message)
 
 
