@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 
 import sys
 
+from terminaltables import SingleTable
+
 # @see: http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html
 U_ERROR = '\033[1;31mERR ✖\033[0m'
 U_WARNING = '\033[33m[warn]\033[0m'
@@ -42,5 +44,9 @@ def ok(message):
     _print_message(sys.stdout, U_OK, message)
 
 
-def collect(message):
+def print_table(rows, title):
+    print(SingleTable(rows, title).table)
+
+
+def collect_input(message):
     return raw_input(_to_utf8(U_INFO + ' ' + message))
