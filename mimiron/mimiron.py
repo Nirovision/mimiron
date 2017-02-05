@@ -4,11 +4,25 @@
 mimiron.py
 
 usage:
-  mim
+  mim fast-deploy [<artifact>|<service>] [<environment>]
+  mim deploy <environment> [--no-push]
+  mim commit <environment>
+
+commands:
+  fast-deploy    update ami/sha and auto-deploy after update
+  deploy         updates the tfvars commit sha in deployments
+  commit         generates a commit message based on changes found
+
+arguments:
+  <artifact>     the deployment artifact we are pushing (e.g. Docker image/AMI)
+  <service>      the application/microservice we're targeting
+  <environment>  the environment we want to change
 
 options:
-  -h --help     shows this
-  -v --version  shows version
+  --no-push      make local changes without pushing to remote
+
+  -h --help      shows this
+  -v --version   shows version
 """
 from __future__ import print_function
 
