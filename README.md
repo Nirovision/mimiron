@@ -34,21 +34,22 @@ export TF_VAR_REPO_PATH=~/workspace/tfvars/
 mimiron.py
 
 usage:
-  mim commit [--no-push]
-  mim up sha [<sha>] [--no-push]
-  mim up app <namespace> <environment [--no-push]
+  mim fast-deploy [<artifact>|<service>] [<env>]
+  mim deploy <env> [--no-push]
+  mim commit <env>
 
 commands:
-  commit        looks for all changes made, creates a commit and pushes to remote
-  up            updates a service/app or git submodule sha
+  fast-deploy   update ami/sha and auto-deploy after update
+  deploy        updates the tfvars commit sha in deployments
+  commit        generates a commit message based on changes found
 
 arguments:
-  sha           git commit sha
-  namespace     namespace name you want to update
-  environment   environment make changes against
+  <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
+  <service>     the application/microservice we're targeting
+  <env>         the environment we want to change
 
 options:
-  --no-push     avoids pushing changes to remote
+  --no-push     make local changes without pushing to remote
 
   -h --help     shows this
   -v --version  shows version
