@@ -61,8 +61,20 @@ options:
 Example workflow:
 
 ```
-$ mim up app website staging
-$ mim up sha
+$ mim commit staging
+$ mim deploy staging
+```
+
+```
+$ mim fast-deploy
+```
+
+```
+$ mim commit staging
+$ mim deploy staging --no-push
+$ git add . -A
+$ git commit --amend --no-edit
+$ git push
 ```
 
 ## Development
