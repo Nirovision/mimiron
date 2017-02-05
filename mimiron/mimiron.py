@@ -30,12 +30,16 @@ from . import __version__
 from docopt import docopt
 
 import config
-from .core.io import err
+from .core.io import err, ok, info, warn
 from .domain import BaseMimironException
 
 
 def _parse_user_input(args):
     print(args)
+    err('we have an issue')
+    warn('we might have an issue')
+    info('things are doing stuff')
+    ok('that was successful')
 
 
 def main():
