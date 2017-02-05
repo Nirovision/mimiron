@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 
+import os
+
 from git.exc import GitCommandError
 
 from ..domain.vendor import UnexpectedGitError
 from ..domain.vendor import FetchRemoteUnknownNextStep
-from ..core.io import warn, info
+from ..core import io
 
 
 def git_failure(f):
@@ -37,20 +39,18 @@ def sync_updates(repo):
 
     True is returned when any changes were made (aside fetch), otherwise False.
     """
-    if repo.is_dirty():
-        warn('"%s" is dirty' % repo.working_dir)
-
-    info('fetching latest changes for "%s" @:%s' % (repo.working_dir, repo.active_branch))
-    repo.remotes.origin.fetch()
     ref = repo.remotes.origin.refs[0].name
+    repo_dir = repo.working_dir
+    branch = repo.active_branch
+
+    io.info('fetching remote for "%s"@:%s' % (os.path.split(repo_dir)[-1], branch))
+    repo.remotes.origin.fetch()
 
     ahead, behind = get_ahead_behind_count(repo)
     if not ahead and not behind and not repo.is_dirty():
-        info('your branch is up-to-date with %s' % ref)
-        info('no changes locally, no changes on remote')
         return False
 
-    info('(found) [ahead: %s, behind: %s] [dirty: %s]' % (ahead, behind, repo.is_dirty()))
+    io.info('(found) [ahead: %s, behind: %s] [dirty: %s]' % (ahead, behind, repo.is_dirty()))
 
     # possible merge conflicts
     if (ahead and behind) or (behind and repo.is_dirty()):
@@ -58,12 +58,12 @@ def sync_updates(repo):
 
     # we're ahead so let's push these changes up
     if ahead:
-        info('ahead, pushing local changes to %s' % ref)
+        io.warn('ahead, pushing local changes to %s' % ref)
         repo.remotes.origin.push()
 
     # we're behind so let's pull changes down
     if behind:
-        info('behind, pulling changes from %s' % ref)
+        io.warn('behind, pulling changes from %s' % ref)
         repo.remotes.origin.pull()
     return True
 
@@ -71,15 +71,20 @@ def sync_updates(repo):
 @git_failure
 def commit_and_push(repo):
     if not repo.is_dirty():
-        return info('nothing to commit, working directory clean')
+        return io.info('nothing to commit, working directory clean')
 
     repo.git.add(u=True)
     message = generate_commit_message(repo)
     repo.index.commit(message)
-    info('created commit with message: "%s"' % message)
+    io.info('created commit with message: "%s"' % message)
 
-    info('pushing changes to %s' % repo.remotes.origin.refs[0].name)
+    io.info('pushing changes to %s' % repo.remotes.origin.refs[0].name)
     repo.remotes.origin.push()
+
+
+@git_failure
+def get_recent_commits(repo, limit=10):
+    return list(repo.iter_commits(max_count=limit))
 
 
 def generate_commit_message(repo):
