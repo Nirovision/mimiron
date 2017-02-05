@@ -4,4 +4,4 @@ install:
 script:
 - make pep
 - python setup.py develop
-- mim
+- mim --help
