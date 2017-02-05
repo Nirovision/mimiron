@@ -5,11 +5,11 @@ class Command(object):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
-        self.validate()
-        self.run()
+        self._validate_and_configure()
+        self._run()
 
-    def validate(self):
+    def _validate_and_configure(self):
         raise NotImplementedError
 
-    def run(self):
+    def _run(self):
         raise NotImplementedError
