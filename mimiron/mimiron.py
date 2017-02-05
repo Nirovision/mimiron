@@ -30,8 +30,8 @@ from . import __version__
 from docopt import docopt
 
 import config
+from .core import io
 from .core.commands import commit, deploy, fast_deploy
-from .core.io import err
 from .domain import BaseMimironException
 
 
@@ -49,7 +49,7 @@ def _parse_user_input(args):
         return deploy.Deploy(env=env, should_push=should_push)
     if args['commit']:
         return commit.Commit(env=env)
-    err('encountered unexpected mim command')
+    io.err('encountered unexpected mim command')
 
 
 def main():
@@ -60,7 +60,7 @@ def main():
     except KeyboardInterrupt:
         pass
     except BaseMimironException as e:
-        err(e)
+        io.err(e)
     exit(0)
 
 
