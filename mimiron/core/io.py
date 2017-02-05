@@ -48,5 +48,18 @@ def print_table(rows, title):
     print(SingleTable(rows, title).table)
 
 
-def collect_input(message):
-    return raw_input(_to_utf8(U_INFO + ' ' + message))
+def collect_input(prompt, selection):
+    """Prompts the user to select an option in the `selection` list."""
+    message = _to_utf8('%s %s ' % (U_INFO, prompt))
+    while True:
+        id_ = raw_input(message)
+        if id_ == 'q':
+            return None
+        try:
+            id_ = int(id_) - 1
+            if id_ < 0:
+                continue
+            return selection[id_]
+        except (ValueError, IndexError):
+            continue
+    return None

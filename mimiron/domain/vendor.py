@@ -14,3 +14,7 @@ class FetchRemoteUnknownNextStep(BaseMimironException):
 
 class UnexpectedGitError(BaseMimironException):
     pass
+
+
+class NoChangesEmptyCommit(BaseMimironException):
+    pass

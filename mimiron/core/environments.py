@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from ..config import config
 
 STAGING = 'staging'
@@ -15,3 +16,12 @@ def get_env_repo(env):
     if env == STAGING:
         return config['TF_VARS_STAGING_REPO']
     return None
+
+
+def get_env_repo_name(env):
+    repo_name = None
+    if env == PRODUCTION:
+        repo_name = config['TF_VARS_PRODUCTION_PATH']
+    if env == STAGING:
+        repo_name = config['TF_VARS_STAGING_PATH']
+    return os.path.split(repo_name)[-1] if repo_name else repo_name

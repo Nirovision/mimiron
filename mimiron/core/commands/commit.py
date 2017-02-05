@@ -7,5 +7,6 @@ class Commit(_Command):
     def _run(self):
         has_changes = git.sync_updates(self.repo)
         if has_changes:
-            git.commit_and_push(self.repo)
-        return True
+            message = 'chore(variables): updated variables.tfvars file'
+            git.commit_and_push(self.repo, message)
+        return None
