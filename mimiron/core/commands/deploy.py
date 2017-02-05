@@ -19,12 +19,12 @@ class Deploy(_Command):
         io.info('listing recent commits for "%s"' % repo_name)
 
         table_data = [
-            ['id', 'commit sha', 'committed at', 'author'],
+            ['id', 'commit', 'committed at', 'author (name)'],
         ]
         for i, c in enumerate(commits, 1):
-            author = '%s %s' % (c.author.name, c.author.email)
-            row = [i, c.name_rev, c.authored_datetime, author]
-            table_data.append(row)
+            sha = c.name_rev.split(' ')[0][:10]
+            authored_at = c.authored_datetime.strftime('%a %d %b, %I:%M%p')
+            table_data.append([i, sha, authored_at, c.author.name])
 
         io.print_table(table_data, 'recent commits')
         return io.collect_input('select the commit sha you want to update [q]:', commits)
