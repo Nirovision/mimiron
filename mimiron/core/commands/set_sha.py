@@ -40,7 +40,7 @@ class SetSha(_Command):
 
         submodule_name = get_env_repo_name(self.env)
         commit_sha = commit.name_rev.split(' ')[0]
-        has_changes = git.sync_submodule_updates(self.deploy_repo, submodule_name, commit_sha)
+        has_changes = git.update_submodule(self.deploy_repo, submodule_name, commit_sha)
 
         if not has_changes:
             return None

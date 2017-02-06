@@ -73,7 +73,13 @@ def sync_updates(repo):
 
 
 @git_failure
-def sync_submodule_updates(repo, submodule_name, commit):
+def sync_submodule_updates(repo):
+    for sm in repo.submodules:
+        sm.update()
+
+
+@git_failure
+def update_submodule(repo, submodule_name, commit):
     io.info('updating submodule "%s:%s"' % (submodule_name, commit))
     target_sm = None
     for sm in repo.submodules:
