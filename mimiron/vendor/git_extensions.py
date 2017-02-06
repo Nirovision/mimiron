@@ -106,8 +106,9 @@ def commit_changes(repo, commit_message):
         return False
 
     repo.git.add(u=True)
-    repo.index.commit(commit_message)
+    commit = repo.index.commit(commit_message)
     io.info('created commit with message: "%s"' % commit_message)
+    io.info('commit id: %s' % commit.name_rev)
     return True
 
 
@@ -115,6 +116,7 @@ def commit_changes(repo, commit_message):
 def push_commits(repo):
     io.info('pushing changes to %s' % repo.remotes.origin.refs[0].name)
     repo.remotes.origin.push()
+    io.ok('successfully pushed changes to %s' % repo.remotes.origin.refs[0].name)
 
 
 @git_failure
