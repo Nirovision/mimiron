@@ -2,6 +2,6 @@
 from . import Command as _Command
 
 
-class Deploy(_Command):
+class Sync(_Command):
     def _run(self):
         pass

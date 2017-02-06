@@ -38,41 +38,51 @@ export DOCKER_PASSWORD=""
 mimiron.py
 
 usage:
-  mim fast-deploy [<artifact>|<service>] [<env>]
-  mim deploy <env> [--no-push]
-  mim commit <env>
+    mim deploy [<artifact>|<service>] [<env>]
+    mim set-sha <env> [--no-push]
+    mim set-var <env>
+    mim sync
 
 commands:
-  fast-deploy   update ami/sha and auto-deploy after update
-  deploy        updates the tfvars commit sha in deployments
-  commit        generates a commit message based on changes found
+    deploy        update ami/sha and auto-deploy after update
+    set-sha       update tfvars commit sha in deployments and push to remote
+    set-var       commit and pushes tfvars for <env> based on changes found
+    sync          calls git fetch on all associated git repos
 
 arguments:
-  <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
-  <service>     the application/microservice we're targeting
-  <env>         the environment we want to change
+    <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
+    <service>     the application/microservice we're targeting
+    <env>         the environment we want to change
 
 options:
-  --no-push     make local changes without pushing to remote
+    --no-push     make local changes without pushing to remote
 
-  -h --help     shows this
-  -v --version  shows version
+    -h --help     shows this
+    -v --version  shows version
 ```
 
-Example workflow:
+**Example workflows:**
 
 ```
-$ mim commit staging
-$ mim deploy staging
-```
-
-```
-$ mim fast-deploy
+$ mim sync
+$ mim set-var staging
+$ mim set-sha staging
 ```
 
 ```
-$ mim commit staging
-$ mim deploy staging --no-push
+$ mim sync
+$ mim deploy
+```
+
+```
+$ mim sync
+$ mim deploy my-service
+```
+
+```
+$ mim sync
+$ mim set-var staging
+$ mim set-sha staging --no-push
 $ git add . -A
 $ git commit --amend --no-edit
 $ git push
