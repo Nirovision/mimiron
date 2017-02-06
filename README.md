@@ -1,6 +1,7 @@
 # Mimiron
 
 [![Build Status](https://travis-ci.org/ImageIntelligence/mimiron.svg?branch=master)](https://travis-ci.org/ImageIntelligence/mimiron)
+[![PyPI version](https://badge.fury.io/py/mimiron.svg)](https://badge.fury.io/py/mimiron)
 
 **Welcome to mimiron!**
 
