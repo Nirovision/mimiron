@@ -45,7 +45,7 @@ class Deploy(_Command):
         if not has_changes:
             return None
 
-        message = 'chore(tfvars): updated %s tfvars with %s' % (self.env, commit_sha)
+        message = 'chore(tfvars): bump %s.tfvars %s' % (self.env, commit_sha[:10])
         if self.should_push:
             git.commit_and_push(self.deploy_repo, message)
         else:
