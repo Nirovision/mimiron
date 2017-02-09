@@ -5,6 +5,7 @@ from ..environments import is_valid_env
 from ..environments import get_env_repo
 
 from ...domain.commands import InvalidEnvironment
+from ...domain.commands import EnvironmentNotLinked
 
 
 class Command(object):
@@ -22,6 +23,8 @@ class Command(object):
 
         self.env = env
         self.repo = get_env_repo(self.env)
+        if self.env and not self.repo:
+            raise EnvironmentNotLinked(env)
 
     def _run(self):
         raise NotImplementedError
