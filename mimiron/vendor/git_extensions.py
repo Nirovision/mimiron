@@ -74,8 +74,11 @@ def sync_updates(repo, push=False):
 
 @git_failure
 def sync_submodule_updates(repo):
+    has_updated = False
     for sm in repo.submodules:
         sm.update()
+        has_updated = True
+    return has_updated
 
 
 @git_failure
