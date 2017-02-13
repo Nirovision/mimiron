@@ -30,6 +30,7 @@ setup(
         'docopt==0.6.2',
         'terminaltables==3.1.0',
         'GitPython==2.1.1',
+        'requests==2.13.0',
     ],
     include_package_data=True,
     package_data={'': ['README.md']},
