@@ -18,6 +18,7 @@ config = {
     'TF_VARS_PRODUCTION_REPO': None,
     'DOCKER_USERNAME': os.environ.get('DOCKER_USERNAME'),
     'DOCKER_PASSWORD': os.environ.get('DOCKER_PASSWORD'),
+    'EDITOR': os.environ.get('EDITOR', 'vi'),
 }
 
 

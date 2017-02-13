@@ -29,6 +29,7 @@ export TF_VARS_STAGING_PATH="~/workspace/tfvars-staging"
 export TF_VARS_PRODUCTION_PATH="~/workspace/tfvars-prod"
 export DOCKER_USERNAME=""
 export DOCKER_PASSWORD=""
+export EDITOR="vi"
 ```
 
 ## Usage
@@ -42,12 +43,14 @@ usage:
     mim set-sha <env> [--no-push]
     mim set-var <env>
     mim sync
+    mim edit <env>
 
 commands:
     deploy        update ami/sha and auto-deploy after update
     set-sha       update tfvars commit sha in deployments and push to remote
     set-var       commit and pushes tfvars for <env> based on changes found
     sync          calls git fetch on all associated git repos
+    edit          opens the tfvar config in the default editor
 
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
@@ -65,6 +68,7 @@ options:
 
 ```
 $ mim sync
+$ mim edit staging
 $ mim set-var staging
 $ mim set-sha staging
 ```

@@ -8,12 +8,14 @@ usage:
     mim set-sha <env> [--no-push]
     mim set-var <env>
     mim sync
+    mim edit <env>
 
 commands:
     deploy        update ami/sha and auto-deploy after update
     set-sha       update tfvars commit sha in deployments and push to remote
     set-var       commit and pushes tfvars for <env> based on changes found
     sync          calls git fetch on all associated git repos
+    edit          opens the tfvar config in the default editor
 
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
@@ -33,7 +35,8 @@ from docopt import docopt
 
 import config
 from .core import io
-from .core.commands import deploy, sync, set_sha, set_var
+from .core.commands import deploy, sync, edit
+from .core.commands import set_sha, set_var
 from .domain import BaseMimironException
 
 
@@ -53,6 +56,8 @@ def _parse_user_input(args):
         return set_var.SetVar(env=env)
     if args['sync']:
         return sync.Sync()
+    if args['edit']:
+        return edit.Edit(env=env)
     io.err('encountered unexpected mim command')
 
 
