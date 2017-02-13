@@ -14,7 +14,9 @@ class Command(object):
         self.config = conf
 
         self._validate_and_configure()
+        self._before_run()
         self._run()
+        self._after_run()
 
     def _validate_and_configure(self):
         env = self.kwargs.get('env')
@@ -28,3 +30,9 @@ class Command(object):
 
     def _run(self):
         raise NotImplementedError
+
+    def _before_run(self):
+        pass
+
+    def _after_run(self):
+        pass
