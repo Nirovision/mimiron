@@ -12,6 +12,6 @@ class Sync(_Command):
         ]:
             if repo is None:
                 continue
-            git.sync_updates(repo)
+            git.sync_updates(repo, push=True)
             git.sync_submodule_updates(repo)
         return None

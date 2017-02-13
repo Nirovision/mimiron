@@ -36,7 +36,7 @@ def get_ahead_behind_count(repo):
 
 
 @git_failure
-def sync_updates(repo):
+def sync_updates(repo, push=False):
     """Updates the local `repo` with origin, pulling and push when necessary.
 
     True is returned when any changes were made (aside fetch), otherwise False.
@@ -61,7 +61,7 @@ def sync_updates(repo):
         raise FetchRemoteUnknownNextStep('possible merge conflict. please manually resolve')
 
     # we're ahead so let's push these changes up
-    if ahead:
+    if ahead and push:
         io.warn('ahead, pushing local changes to %s' % ref)
         repo.remotes.origin.push()
 
