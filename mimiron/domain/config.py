@@ -23,3 +23,8 @@ class MissingDockerCredentials(BaseMimironException):
 class InvalidRepositoryPath(BaseMimironException):
     def __init__(self, path):
         super(self.__class__, self).__init__('"%s" directory does not exist' % path)
+
+
+class EditorNotSpecified(BaseMimironException):
+    def __init__(self):
+        super(self.__class__, self).__init__('$EDITOR var was not specified')

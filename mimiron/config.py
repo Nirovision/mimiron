@@ -6,6 +6,7 @@ from git import InvalidGitRepositoryError as _InvalidGitRepositoryError
 
 from .domain.config import DeploymentRepoNotFound, TFVarsRepoNotFound
 from .domain.config import MissingDockerCredentials
+from .domain.config import EditorNotSpecified
 from .domain.config import InvalidRepositoryPath
 from .domain.vendor import InvalidGitRepo
 
@@ -50,6 +51,9 @@ def validate():
         raise MissingDockerCredentials('username')
     if not config['DOCKER_PASSWORD']:
         raise MissingDockerCredentials('password')
+
+    if not os.path.isfile(config['EDITOR']):
+        raise EditorNotSpecified()
 
     map(_build_repo_from_paths, [
         ('TF_DEPLOYMENT_PATH', 'TF_DEPLOYMENT_REPO',),
