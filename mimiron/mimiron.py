@@ -4,7 +4,7 @@
 mimiron.py
 
 usage:
-    mim deploy [<artifact>|<service>] [<env>]
+    mim deploy <service> <env> [<artifact>]
     mim set-sha <env> [--no-push]
     mim set-var <env>
     mim sync
@@ -45,9 +45,7 @@ def _parse_user_input(args):
 
     if args['deploy']:
         return deploy.Deploy(
-            env=env,
-            artifact=args['<artifact>'],
-            service=args['<service>']
+            env=env, service=args['<service>'], artifact=args['<artifact>']
         )
     if args['set-sha']:
         should_push = not args['--no-push']
@@ -65,6 +63,8 @@ def main():
     args = docopt(__doc__, version=__version__)
     try:
         config.validate()
+        config.post_process()
+
         _parse_user_input(args)
     except KeyboardInterrupt:
         pass

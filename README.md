@@ -29,6 +29,7 @@ export TF_VARS_STAGING_PATH="~/workspace/tfvars-staging"
 export TF_VARS_PRODUCTION_PATH="~/workspace/tfvars-prod"
 export DOCKER_USERNAME=""
 export DOCKER_PASSWORD=""
+export DOCKER_ORG=""
 export EDITOR="vi"
 ```
 
