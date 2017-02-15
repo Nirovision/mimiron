@@ -14,6 +14,11 @@ class TFVarsRepoNotFound(BaseMimironException):
         super(self.__class__, self).__init__(message)
 
 
+class MissingTFVarsConfigFileName(BaseMimironException):
+    def __init__(self):
+        super(self.__class__, self).__init__('$TF_VARS_FILE_NAME var was not specified')
+
+
 class MissingDockerCredentials(BaseMimironException):
     def __init__(self, missing_credential):
         message = 'missing docker credentials "%s"' % missing_credential

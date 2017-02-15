@@ -10,7 +10,7 @@ class Edit(_Command):
     def _run(self):
         io.info('preparing to open config for "%s"' % self.env)
 
-        config_var_path = os.path.join(self.repo.working_dir, 'variables.json')
+        config_var_path = os.path.join(self.repo.working_dir, self.config['TF_VARS_FILE_NAME'])
         if not os.path.isfile(config_var_path):
             io.err('failed to open "%s" (not a file)' % config_var_path)
         else:
