@@ -1,0 +1,7 @@
+- `set-var` should validation tfvars config file before committing and pushing`
+- maybe rename `set-sha` to `link` and `set-var` to something else...
+- add `--latest` `set-sha` to automatically use the latest commit sha
+- io.err shouldn't exit(1). functions should handle the error properly
+- add `mim cd <environment>|<deployment>` so easily change directories`
+- all commits by mimiron should have "Committed by Mimiron <ImageIntelligence/mimiron.git>" in the message body
+-
