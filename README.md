@@ -9,7 +9,7 @@
 
 Mimiron a CLI tool whose purpose is to be the glue between your tfvars and Terraform config.
 
-When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.tfvars` file and pass that along when you run `terraform apply -var-file=variables.tf`... but where do you store `variables.tfvars`?
+When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.json` file and pass that along when you run `terraform apply -var-file=variables.tf`... but where do you store `variables.json`?
 
 Our MVP approach is to store variables inside a separate git repository. Inside the Terraform deployments repo, create a link between the two via `git submodules`, making sure to specify the commit SHA.
 
