@@ -14,7 +14,7 @@ class SetSha(_Command):
         self.deploy_repo = self.config['TF_DEPLOYMENT_REPO']
         self.should_push = self.kwargs['should_push']
 
-    def _prompt_recent_commits(self, commits):
+    def _prompt_recent_commits(self, commits, limit=10):
         repo_name = os.path.split(self.repo.working_dir)[-1]
         io.info('listing recent commits for "%s"' % repo_name)
 
@@ -22,7 +22,7 @@ class SetSha(_Command):
             ['id', 'commit', 'committed at', 'author (name)'],
         ]
         for i, c in enumerate(commits, 1):
-            sha = c.name_rev.split(' ')[0][:10]
+            sha = c.name_rev.split(' ')[0][:limit]
             authored_at = c.authored_datetime.strftime('%a %d %b, %I:%M%p')
             table_data.append([i, sha, authored_at, c.author.name])
 
@@ -51,4 +51,4 @@ class SetSha(_Command):
         else:
             git.commit_changes(self.deploy_repo, message)
             io.warn('commit to tfvars was NOT pushed to remote!')
-            io.warn("it's your responsibility to bundle more changes and explicitly push")
+            io.warn("it's your responsibility to bundle changes and explicitly push")
