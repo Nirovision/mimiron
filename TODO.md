@@ -4,4 +4,4 @@
 - io.err shouldn't exit(1). functions should handle the error properly
 - add `mim cd <environment>|<deployment>` so easily change directories`
 - all commits by mimiron should have "Committed by Mimiron <ImageIntelligence/mimiron.git>" in the message body
--
+- when selecting a sha, the table should indicate the current selected sha
