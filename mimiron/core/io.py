@@ -8,7 +8,7 @@ import sys
 from terminaltables import SingleTable
 
 # @see: http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html
-U_ERROR = '\033[1;31mERR ✖\033[0m'
+U_ERROR = '\033[1;31m[error]\033[0m'
 U_WARNING = '\033[33m[warn]\033[0m'
 U_INFO = '\033[34m==>\033[0m'
 U_OK = '\033[32mOK ✓\033[0m'
