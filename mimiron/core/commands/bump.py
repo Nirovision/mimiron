@@ -1,7 +1,94 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+from dateutil import tz
+
+import humanize
+
 from . import Command as _Command
+from .. import io
+
+from ...domain.vendor import InvalidDockerHubCredentials
+from ...domain.vendor import NoChangesEmptyCommit
+from ...vendor.terraform import TFVarsConfig
+from ...vendor import dockerhub, git_extensions
 
 
 class Bump(_Command):
+    def _validate_and_configure(self):
+        super(self.__class__, self)._validate_and_configure()
+
+        self.tf = TFVarsConfig(self.tfvars_path)
+        self.tf.load()
+
+        self.service_name = self.kwargs['service']
+        self.service_name_normalized = self.tf.normalize_service_name(self.service_name)
+
+        self.should_push = self.kwargs['should_push']
+        self.is_ami = self.kwargs['is_ami']
+
+        io.info('authenticating "%s" against dockerhub' % self.config['DOCKER_ORG'])
+        self.auth = dockerhub.DockerHubAuthentication(
+            self.config['DOCKER_USERNAME'],
+            self.config['DOCKER_PASSWORD'],
+            self.config['DOCKER_ORG']
+        )
+
+        self.token = self.auth.generate_token()
+        if self.token is None:
+            raise InvalidDockerHubCredentials
+
+    def _prompt_artifact_selection(self, artifacts):
+        current_artifact = self.tf.get_var(self.service_name_normalized + '_image')
+
+        io.info('found artifacts for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))
+        table_data = [
+            ['id', 'tag name (* = current)', 'created at', 'size'],
+        ]
+        for i, artifact in enumerate(artifacts, 1):
+            last_updated = datetime.strptime(artifact['last_updated'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            last_updated = last_updated.replace(tzinfo=tz.gettz('UTC'))
+            last_updated = last_updated.astimezone(tz.tzlocal())
+
+            last_updated_friendly = last_updated.strftime('%a %d %b, %I:%M%p')
+            last_updated_humanized = humanize.naturaltime(last_updated.replace(tzinfo=None))
+
+            updated_at = '%s (%s)' % (last_updated_friendly, last_updated_humanized)
+            image_size = humanize.naturalsize(artifact['full_size'])
+            image_name = artifact['name']
+            if image_name in current_artifact:
+                image_name += ' *'
+
+            table_data.append([i, image_name, updated_at, image_size])
+        io.print_table(table_data, 'recent artifacts')
+        return io.collect_input('select the artifact you want to use [q]:', artifacts)
+
     def _run(self):
-        pass
+        io.info('retrieving artifacts from dockerhub')
+        artifacts = dockerhub.list_image_tags(self.auth, self.service_name)
+        artifacts = artifacts[:10]
+        if not artifacts:
+            io.info('no artifacts were found for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))
+            return
+
+        artifact = self._prompt_artifact_selection(artifacts)
+        if artifact is None:  # An artifact wasn't selected, end command.
+            return
+        tag = artifact['name']
+
+        io.info('updating "%s/%s:%s"' % (self.config['DOCKER_ORG'], self.service_name, tag))
+        image_abspath = dockerhub.build_image_abspath(self.auth, self.service_name_normalized, tag)
+        self.tf.update_var(self.service_name_normalized + '_image', image_abspath)
+        self.tf.save()
+
+        deployment_repo = self.config['TF_DEPLOYMENT_REPO']
+        commit_message = 'chore(variables): bumped %s:%s' % (self.service_name, tag)
+
+        did_commit = git_extensions.commit_changes(deployment_repo, commit_message)
+        if not did_commit:
+            raise NoChangesEmptyCommit('"%s" has nothing to commit' % deployment_repo.working_dir)
+
+        if self.should_push:
+            git_extensions.push_commits(deployment_repo)
+        else:
+            io.warn('commit to tfvars was NOT pushed to remote!')
+            io.warn("it's your responsibility to bundle changes and explicitly push")
