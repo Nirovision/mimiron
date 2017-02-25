@@ -7,12 +7,14 @@ from ..domain.vendor import DockerConnectionError
 
 
 class DockerHubAuthentication(object):
-    def __init__(self, username, password, org):
+    def __init__(self, username, password, org, generate_token=True):
         self.username = username
         self.password = password
         self.org = org
 
         self._token = None
+        if generate_token:
+            self._token = self.generate_token()
 
     def generate_token(self):
         payload = json.dumps({

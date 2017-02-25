@@ -31,7 +31,6 @@ class Bump(_Command):
             self.config['DOCKER_PASSWORD'],
             self.config['DOCKER_ORG']
         )
-        self.token = self.auth.generate_token()
 
     def _prompt_artifact_selection(self, artifacts):
         current_image = self.tf.get_var(self.service_name_normalized + '_image')
