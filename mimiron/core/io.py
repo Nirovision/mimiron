@@ -26,10 +26,8 @@ def _print_message(stream, *components):
     return print(message, file=stream)
 
 
-def err(message, exit_=False):
+def err(message):
     _print_message(sys.stderr, U_ERROR, message)
-    if exit_:
-        exit(0)
 
 
 def warn(message):

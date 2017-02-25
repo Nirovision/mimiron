@@ -29,7 +29,9 @@ from docopt import docopt
 import config
 from .core import io
 from .core.commands import bump
+
 from .domain import BaseMimironException
+from .domain.commands import UnexpectedCommand
 
 
 def _parse_user_input(args):
@@ -42,7 +44,7 @@ def _parse_user_input(args):
             is_latest=args['--latest'],
             should_push=not args['--no-push']
         )
-    io.err('encountered unexpected mim command')
+    raise UnexpectedCommand
 
 
 def main():
@@ -56,6 +58,7 @@ def main():
         pass
     except BaseMimironException as e:
         io.err(e)
+        exit(1)
     exit(0)
 
 
