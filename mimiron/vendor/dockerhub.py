@@ -20,8 +20,11 @@ class DockerHubAuthentication(object):
         }
         endpoint = 'https://hub.docker.com/v2/users/login/'
 
-        response = requests.post(endpoint, data=payload, headers=headers)
-        return response.json()['token'] if response.status_code == 200 else None
+        try:
+            response = requests.post(endpoint, data=payload, headers=headers)
+            return response.json()['token'] if response.status_code == 200 else None
+        except requests.exceptions.ConnectionError:
+            return None
 
     @property
     def token(self):
@@ -38,8 +41,12 @@ def _api_request(endpoint, method, auth):
     token = auth.token
     if token is None:
         return None
-    response = method(endpoint, headers={'Authorization': 'JWT %s' % token})
-    return response.json() if response.status_code == 200 else None
+
+    try:
+        response = method(endpoint, headers={'Authorization': 'JWT %s' % token})
+        return response.json() if response.status_code == 200 else None
+    except requests.exceptions.ConnectionError:
+        return None
 
 
 def list_repositories(auth, page_size=100):
