@@ -19,6 +19,8 @@ class Bump(_Command):
         self.tf = TFVarsConfig(self.tfvars_path)
         self.tf.load()
 
+        self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
+
         self.service_name = self.kwargs['service']
         self.service_name_normalized = self.tf.normalize_service_name(self.service_name)
 
@@ -73,7 +75,7 @@ class Bump(_Command):
         return latest_artifact
 
     def _get_artifact(self):
-        io.info('retrieving artifacts from dockerhub')
+        io.info('retrieving image tags for "%s" from dockerhub' % self.service_name)
         artifacts = dockerhub.list_image_tags(self.auth, self.service_name)
         artifacts = artifacts[:10]
 
@@ -97,15 +99,14 @@ class Bump(_Command):
         self.tf.update_var(self.service_name_normalized + '_image', image_abspath)
         self.tf.save()
 
-        deployment_repo = self.config['TF_DEPLOYMENT_REPO']
         commit_message = 'chore(variables): bumped %s:%s' % (self.service_name, tag)
 
-        did_commit = git_extensions.commit_changes(deployment_repo, commit_message)
+        did_commit = git_extensions.commit_changes(self.deployment_repo, commit_message)
         if not did_commit:
-            raise NoChangesEmptyCommit('"%s" has nothing to commit' % deployment_repo.working_dir)
+            raise NoChangesEmptyCommit('"%s" has nothing to commit' % self.deployment_repo.working_dir)
 
         if self.should_push:
-            git_extensions.push_commits(deployment_repo)
+            git_extensions.push_commits(self.deployment_repo)
         else:
             io.warn('commit to tfvars was NOT pushed to remote!')
             io.warn("it's your responsibility to bundle changes and explicitly push")
