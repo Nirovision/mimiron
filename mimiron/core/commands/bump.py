@@ -24,7 +24,7 @@ class Bump(_Command):
         self.service_name_normalized = self.tf.normalize_service_name(self.service_name)
 
         self.should_push = self.kwargs['should_push']
-        self.is_ami = self.kwargs['is_ami']
+        self.is_latest = self.kwargs['is_latest']
 
         io.info('authenticating "%s" against dockerhub' % self.config['DOCKER_ORG'])
         self.auth = dockerhub.DockerHubAuthentication(
@@ -62,17 +62,32 @@ class Bump(_Command):
         io.print_table(table_data, 'recent artifacts')
         return io.collect_input('select the artifact you want to use [q]:', artifacts)
 
-    def _run(self):
+    def _prompt_latest_confirmation(self, artifacts):
+        latest_artifact = artifacts[0]
+        tag = latest_artifact['name']
+
+        input_ = io.collect_single_input('are you sure (latest: %s)? [y/n/q]:' % tag)
+        if input_ not in ['y', None]:
+            return None
+        return latest_artifact
+
+    def _get_artifact(self):
         io.info('retrieving artifacts from dockerhub')
         artifacts = dockerhub.list_image_tags(self.auth, self.service_name)
         artifacts = artifacts[:10]
-        if not artifacts:
-            io.info('no artifacts were found for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))
-            return
 
-        artifact = self._prompt_artifact_selection(artifacts)
+        if not artifacts:
+            io.err('no artifacts were found for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))
+            return None
+
+        if self.is_latest:
+            return self._prompt_latest_confirmation(artifacts)
+        return self._prompt_artifact_selection(artifacts)
+
+    def _run(self):
+        artifact = self._get_artifact()
         if artifact is None:  # An artifact wasn't selected, end command.
-            return
+            return None
         tag = artifact['name']
 
         io.info('updating "%s/%s:%s"' % (self.config['DOCKER_ORG'], self.service_name, tag))

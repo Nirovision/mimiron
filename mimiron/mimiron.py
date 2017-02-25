@@ -4,7 +4,7 @@
 mimiron.py
 
 usage:
-    mim bump <service> <env> [--ami] [--no-push]
+    mim bump <service> <env> [--latest] [--no-push]
 
 commands:
     bump          bumps the <service> with an image <artifact>
@@ -16,7 +16,7 @@ arguments:
 
 options:
     --no-push     make local changes without pushing to remote
-    --ami         signals that the service is an ami (not docker image)
+    --latest      use the latest artifact when updating a service
 
     -h --help     shows this
     -v --version  shows version
@@ -39,7 +39,7 @@ def _parse_user_input(args):
         return bump.Bump(
             env=env,
             service=args['<service>'],
-            is_ami=args['--ami'],
+            is_latest=args['--latest'],
             should_push=not args['--no-push']
         )
     io.err('encountered unexpected mim command')
