@@ -90,8 +90,9 @@ class Bump(_Command):
             return None
         tag = artifact['name']
 
-        io.info('updating "%s/%s:%s"' % (self.config['DOCKER_ORG'], self.service_name, tag))
         image_abspath = dockerhub.build_image_abspath(self.auth, self.service_name_normalized, tag)
+        io.info('updating "%s"' % image_abspath)
+
         self.tf.update_var(self.service_name_normalized + '_image', image_abspath)
         self.tf.save()
 
