@@ -52,17 +52,3 @@ class TFVarsConfig(object):
 
     def get_var(self, name):
         return self.config[name]
-
-
-def load_tfvars(path):
-    try:
-        with open(path, 'rU') as f:
-            return json.load(f)
-    except IOError:
-        raise TFVarsMissingConfigFile(path)
-    except (TypeError, ValueError) as e:
-        raise InvalidTFVarsConfig(path, e)
-
-
-def normalize_service_name(service):
-    return str(service).strip().replace('-', '_')
