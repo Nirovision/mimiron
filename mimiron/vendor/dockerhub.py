@@ -2,6 +2,9 @@
 import requests
 import json
 
+from ..domain.vendor import InvalidDockerHubCredentials
+from ..domain.vendor import DockerConnectionError
+
 
 class DockerHubAuthentication(object):
     def __init__(self, username, password, org):
@@ -22,9 +25,11 @@ class DockerHubAuthentication(object):
 
         try:
             response = requests.post(endpoint, data=payload, headers=headers)
-            return response.json()['token'] if response.status_code == 200 else None
+            if response.status_code == 200:
+                return response.json()['token']
+            raise InvalidDockerHubCredentials
         except requests.exceptions.ConnectionError:
-            return None
+            raise DockerConnectionError
 
     @property
     def token(self):
@@ -46,7 +51,7 @@ def _api_request(endpoint, method, auth):
         response = method(endpoint, headers={'Authorization': 'JWT %s' % token})
         return response.json() if response.status_code == 200 else None
     except requests.exceptions.ConnectionError:
-        return None
+        raise DockerConnectionError
 
 
 def list_repositories(auth, page_size=100):

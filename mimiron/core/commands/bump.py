@@ -7,7 +7,6 @@ import humanize
 from . import Command as _Command
 from .. import io
 
-from ...domain.vendor import InvalidDockerHubCredentials
 from ...domain.vendor import NoChangesEmptyCommit
 from ...vendor.terraform import TFVarsConfig
 from ...vendor import dockerhub, git_extensions
@@ -32,10 +31,7 @@ class Bump(_Command):
             self.config['DOCKER_PASSWORD'],
             self.config['DOCKER_ORG']
         )
-
         self.token = self.auth.generate_token()
-        if self.token is None:
-            raise InvalidDockerHubCredentials
 
     def _prompt_artifact_selection(self, artifacts):
         current_image = self.tf.get_var(self.service_name_normalized + '_image')

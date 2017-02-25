@@ -51,3 +51,9 @@ class InvalidDockerHubCredentials(BaseMimironException):
     def __init__(self):
         message = 'failed to authenticate against dockerhub'
         super(self.__class__, self).__init__(message)
+
+
+class DockerConnectionError(BaseMimironException):
+    def __init__(self):
+        message = 'failed to connect to dockerhub auth servers'
+        super(self.__class__, self).__init__(message)
