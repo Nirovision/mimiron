@@ -5,9 +5,11 @@ mimiron.py
 
 usage:
     mim bump <service> <env> [--latest] [--no-push]
+    mim status <env>
 
 commands:
     bump          bumps the <service> with an image <artifact>
+    status        shows the currently used artifact id for <env>
 
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
@@ -29,6 +31,7 @@ from docopt import docopt
 import config
 from .core import io
 from .core.commands import bump
+from .core.commands import status
 
 from .domain import BaseMimironException
 from .domain.commands import UnexpectedCommand
@@ -44,6 +47,8 @@ def _parse_user_input(args):
             is_latest=args['--latest'],
             should_push=not args['--no-push']
         )
+    if args['status']:
+        return status.Status(env=env)
     raise UnexpectedCommand
 
 
