@@ -38,7 +38,7 @@ class Bump(_Command):
             raise InvalidDockerHubCredentials
 
     def _prompt_artifact_selection(self, artifacts):
-        current_artifact = self.tf.get_var(self.service_name_normalized + '_image')
+        current_image = self.tf.get_var(self.service_name_normalized + '_image')
 
         io.info('found artifacts for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))
         table_data = [
@@ -55,12 +55,18 @@ class Bump(_Command):
             updated_at = '%s (%s)' % (last_updated_friendly, last_updated_humanized)
             image_size = humanize.naturalsize(artifact['full_size'])
             image_name = artifact['name']
-            if image_name in current_artifact:
+            if image_name in current_image:  # indicate the current artifact.
                 image_name += ' *'
 
             table_data.append([i, image_name, updated_at, image_size])
         io.print_table(table_data, 'recent artifacts')
-        return io.collect_input('select the artifact you want to use [q]:', artifacts)
+
+        # Handle the case where the selected artifacat is the current artifact.
+        selected_artifact = io.collect_input('select the artifact you want to use [q]:', artifacts)
+        if selected_artifact and selected_artifact['name'] in current_image:
+            io.err('selected artifact is already the current active artifact')
+            return None
+        return selected_artifact
 
     def _prompt_latest_confirmation(self, artifacts):
         latest_artifact = artifacts[0]
