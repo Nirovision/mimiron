@@ -1,3 +1,0 @@
-- add `--latest` `set-sha` to automatically use the latest commit sha
-- io.err shouldn't exit(1). functions should handle the error properly
-- all commits by mimiron should have "Committed by Mimiron <ImageIntelligence/mimiron.git>" in the message body
