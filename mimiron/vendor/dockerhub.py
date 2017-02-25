@@ -42,7 +42,7 @@ def _api_request(endpoint, method, auth):
     return response.json() if response.status_code == 200 else None
 
 
-def list_image_repos(auth, page_size=100):
+def list_repositories(auth, page_size=100):
     endpoint = 'https://hub.docker.com/v2/repositories/%s/?page_size=%s' % (
         auth.org, page_size,
     )
@@ -50,9 +50,13 @@ def list_image_repos(auth, page_size=100):
     return response['results'] if response is not None else response
 
 
-def list_image_tags(image_name, auth, page_size=100):
+def list_image_tags(auth, image_name, page_size=100):
     endpoint = 'https://hub.docker.com/v2/repositories/%s/%s/tags/?page_size=%s' % (
         auth.org, image_name, page_size,
     )
     response = _api_request(endpoint, requests.get, auth)
     return response['results'] if response is not None else response
+
+
+def build_image_abspath(auth, image_name, tag):
+    return auth.org + '/' + image_name + ':' + tag
