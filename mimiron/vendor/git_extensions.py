@@ -7,7 +7,6 @@ from git.exc import GitCommandError
 
 from ..domain.vendor import UnexpectedGitError
 from ..domain.vendor import FetchRemoteUnknownNextStep
-from ..domain.vendor import NoChangesEmptyCommit
 from ..core import io
 
 
