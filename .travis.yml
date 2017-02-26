@@ -5,3 +5,4 @@ script:
 - make pep
 - python setup.py develop
 - mim --help
+- make tests
