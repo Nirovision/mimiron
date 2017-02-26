@@ -32,7 +32,7 @@ export DOCKER_ORG=""
 
 ## Assumptions
 
-* Your deployments repository (containing Terraform config) has a directory `/terraform/tfvars/` with your tfvars in JSON file (`staging.json`)
+* Your Terraform config repo has a dir `/terraform/tfvars/` with your tfvars in a JSON file e.g. `/terraform/tfvars/staging.json`
 * Docker image artifacts are stored in the DockerHub registry
 * Docker image artifacts are named `service_name_image` e.g. `web_marketing_image`
 * AMI artifacts are named `service_name_ami_id` e.g. `web_marketing_ami_id`
