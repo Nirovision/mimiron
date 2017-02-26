@@ -51,6 +51,9 @@ class TFVarsConfig(object):
     def normalize_service_name(self, service):
         return str(service).strip().replace('-', '_')
 
+    def get_artifact_key(self, service, is_ami=False):
+        return service + ('_ami_id' if is_ami else '_image')
+
     def update_var(self, name, value):
         self._config[name] = value
 

@@ -27,6 +27,8 @@ class Bump(_Command):
         self.should_push = self.kwargs['should_push']
         self.is_latest = self.kwargs['is_latest']
 
+        self.artifact_key = self.tf.get_artifact_key(self.service_name_normalized)
+
         io.info('authenticating "%s" against dockerhub' % self.config['DOCKER_ORG'])
         self.auth = dockerhub.DockerHubAuthentication(
             self.config['DOCKER_USERNAME'],
@@ -35,7 +37,7 @@ class Bump(_Command):
         )
 
     def _prompt_artifact_selection(self, artifacts):
-        current_image = self.tf.get_var(self.service_name_normalized + '_image')
+        current_image = self.tf.get_var(self.artifact_key)
 
         io.info('found artifacts for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))
         table_data = [
@@ -58,7 +60,7 @@ class Bump(_Command):
             table_data.append([i, image_name, updated_at, image_size])
         io.print_table(table_data, 'recent artifacts')
 
-        # Handle the case where the selected artifacat is the current artifact.
+        # Handle the case where the selected artifact is the current artifact.
         selected_artifact = io.collect_input('select the artifact you want to use [q]:', artifacts)
         if selected_artifact and selected_artifact['name'] in current_image:
             io.err('selected artifact is already the current active artifact')
@@ -96,7 +98,7 @@ class Bump(_Command):
         image_abspath = dockerhub.build_image_abspath(self.auth, self.service_name_normalized, tag)
         io.info('updating "%s"' % image_abspath)
 
-        self.tf.update_var(self.service_name_normalized + '_image', image_abspath)
+        self.tf.update_var(self.artifact_key, image_abspath)
         self.tf.save()
 
         commit_message = 'chore(variables): bumped %s:%s' % (self.service_name, tag)
