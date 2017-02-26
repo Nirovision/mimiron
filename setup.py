@@ -7,7 +7,7 @@ from mimiron import __version__
 setup(
     name='mimiron',
     version=__version__,
-    description="Mimiron a CLI tool whose purpose is to be the glue between your tfvars and Terraform config.",
+    description="Mimiron is a CLI tool whose purpose is to provide a better workflow when manging tfvars",
     url='https://github.com/ImageIntelligence/mimiron',
 
     author='David Vuong',

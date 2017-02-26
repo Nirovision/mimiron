@@ -7,13 +7,13 @@
 
 > [Mimiron](http://www.wowhead.com/npc=33350/mimiron) is one of the Titanic Watchers. He once resided at the Temple of Invention, but is absent during the time of Loken's rebellion.
 
-Mimiron a CLI tool whose purpose is to be the glue between your tfvars and Terraform config.
+Mimiron is a CLI tool whose purpose is to provide a better workflow when manging tfvars.
 
-When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.json` file and pass that along when you run `terraform apply -var-file=variables.tf`... but where do you store `variables.json`?
+When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.json` file and pass that along when you run `terraform apply -var-file=variables.json`... but where do you store `variables.json`?
 
-Our MVP approach is to store variables inside a separate git repository. Inside the Terraform deployments repo, create a link between the two via `git submodules`, making sure to specify the commit SHA.
+Our approach is to store non-critical variables inside the same repository as our Terraform config. Critical variables like AWS secrets, database master password are stored elsewhere and pulled in via environment variables e.g. `TF_VAR_AWS_ACCESS_KEY`.
 
-This approach is super simple and works but it can be quite cumbersome when you want to make updates. Mimiron provides a few commands to help automate the cumbersome tasks away.
+We want to make simple tasks such as bumping an image version simple and Mimiron is a small CLI tool that does that. Mimiron provides a few commands to help automate the cumbersome tasks away.
 
 ## Installation
 
@@ -25,13 +25,17 @@ You also need to specify a few environment variables to let Mimiron know where y
 
 ```bash
 export TF_DEPLOYMENT_PATH="~/workspace/terraform"
-export TF_VARS_STAGING_PATH="~/workspace/tfvars-staging"
-export TF_VARS_PRODUCTION_PATH="~/workspace/tfvars-prod"
 export DOCKER_USERNAME=""
 export DOCKER_PASSWORD=""
 export DOCKER_ORG=""
-export EDITOR="vi"
 ```
+
+## Assumptions
+
+* Your deployments repository (containing Terraform config) has a directory `/terraform/tfvars/` with your tfvars in JSON file (`staging.json`)
+* Docker image artifacts are stored in the DockerHub registry
+* Docker image artifacts are named `service_name_image` e.g. `web_marketing_image`
+* AMI artifacts are named `service_name_ami_id` e.g. `web_marketing_ami_id`
 
 ## Usage
 
@@ -40,57 +44,24 @@ export EDITOR="vi"
 mimiron.py
 
 usage:
-    mim deploy [<artifact>|<service>] [<env>]
-    mim set-sha <env> [--no-push]
-    mim set-var <env>
-    mim sync
-    mim edit <env>
+    mim bump <service> <env> [--latest] [--no-push]
+    mim status <env>
 
 commands:
-    deploy        update ami/sha and auto-deploy after update
-    set-sha       update tfvars commit sha in deployments and push to remote
-    set-var       commit and pushes tfvars for <env> based on changes found
-    sync          calls git fetch on all associated git repos
-    edit          opens the tfvar config in the default editor
+    bump          bumps the <service> with an image <artifact>
+    status        shows the currently used artifact id for <env>
 
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
-    <service>     the application/microservice we're targeting
+    <service>     the application we're targeting
     <env>         the environment we want to change
 
 options:
     --no-push     make local changes without pushing to remote
+    --latest      use the latest artifact when updating a service
 
     -h --help     shows this
     -v --version  shows version
-```
-
-**Example workflows:**
-
-```
-$ mim sync
-$ mim edit staging
-$ mim set-var staging
-$ mim set-sha staging
-```
-
-```
-$ mim sync
-$ mim deploy
-```
-
-```
-$ mim sync
-$ mim deploy my-service
-```
-
-```
-$ mim sync
-$ mim set-var staging
-$ mim set-sha staging --no-push
-$ git add . -A
-$ git commit --amend --no-edit
-$ git push
 ```
 
 ## Development
