@@ -10,3 +10,4 @@ bling.json
 
 *.egg-info/
 .idea/
+.cache/
