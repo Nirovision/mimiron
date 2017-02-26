@@ -13,16 +13,21 @@ class Status(_Command):
         self.tf.load()
 
     def _run(self):
-        config = self.tf.config
-        config = {k: v for k, v in config.iteritems() if k.endswith('_image')}
+        services = self.tf.get_services()
 
-        table_data = [['name', 'image tag', 'artifact name']]
-        for service_name in sorted(config.iterkeys()):
-            artifact = config[service_name]
-            image_tag = artifact.split(':')[-1]
-            service_name = service_name.replace('_image', '')
+        docker_org = self.config['DOCKER_ORG']
+        table_data = [
+            ['id', 'name', 'image tag (%s)' % docker_org, 'running', 'is active'],
+        ]
+        for i, service_name in enumerate(sorted(services.iterkeys()), 1):
+            artifact = services[service_name]
 
-            table_data.append([service_name, image_tag, artifact])
+            image_tag = artifact['image'].split(':')[-1]
+            running = artifact['desired_count']
+            is_active = 'yes' if int(running) > 0 else 'no'
 
-        io.info('displaying "%s" active&non-active services on %s' % (self.config['DOCKER_ORG'], self.env))
+            table_data.append([i, service_name, image_tag, running, is_active])
+
+        io.info('displaying "%s" active&non-active services on %s' % (docker_org, self.env))
         io.print_table(table_data, 'current %s artifacts' % self.env)
+        io.warn('only dockerized services are shown here currently...')

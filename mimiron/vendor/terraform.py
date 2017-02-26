@@ -54,6 +54,19 @@ class TFVarsConfig(object):
     def get_artifact_key(self, service, is_ami=False):
         return service + ('_ami_id' if is_ami else '_image')
 
+    def get_services(self):
+        config = self.config
+
+        services = {}
+        for k in config.iterkeys():
+            if k.endswith('_image'):
+                services[k.replace('_image', '')] = {}
+        for service_name, service_data in services.iteritems():
+            for k, v in config.iteritems():
+                if k.startswith(service_name):
+                    service_data[k.replace(service_name + '_', '')] = v
+        return services
+
     def update_var(self, name, value):
         self._config[name] = value
 
