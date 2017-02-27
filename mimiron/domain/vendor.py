@@ -23,6 +23,10 @@ class NoChangesEmptyCommit(BaseMimironException):
     pass
 
 
+class SyncRemoteError(BaseMimironException):
+    pass
+
+
 # Terraform variables custom exceptions
 
 

@@ -8,6 +8,7 @@ from . import Command as _Command
 from .. import io
 
 from ...domain.vendor import NoChangesEmptyCommit
+from ...domain.vendor import SyncRemoteError
 from ...vendor.terraform import TFVarsConfig
 from ...vendor import dockerhub, git_extensions
 
@@ -91,6 +92,11 @@ class Bump(_Command):
 
     def _run(self):
         artifact = self._get_artifact()
+
+        did_sync = git_extensions.sync_updates(self.deployment_repo)
+        if not did_sync:
+            raise SyncRemoteError('failed to sync "%s" repo' % self.deployment_repo.working_dir)
+
         if artifact is None:  # An artifact wasn't selected, end command.
             return None
         tag = artifact['name']

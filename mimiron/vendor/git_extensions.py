@@ -83,7 +83,7 @@ def commit_changes(repo, commit_message):
     repo.git.add(u=True)
     commit = repo.index.commit(commit_message)
     io.info('commit message: "%s"' % commit_message)
-    io.info('created commit: %s' % commit.name_rev)
+    io.info('created commit: (id) %s' % commit.name_rev)
     return True
 
 
