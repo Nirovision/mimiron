@@ -95,13 +95,13 @@ class Bump(_Command):
             return None
         tag = artifact['name']
 
-        image_abspath = dockerhub.build_image_abspath(self.auth, self.service_name_normalized, tag)
+        image_abspath = dockerhub.build_image_abspath(self.auth, self.service_name, tag)
         io.info('updating "%s"' % image_abspath)
 
         self.tf.update_var(self.artifact_key, image_abspath)
         self.tf.save()
 
-        commit_message = 'chore(variables): bumped %s:%s' % (self.service_name, tag)
+        commit_message = 'chore(variables): bumped %s@%s' % (self.service_name, self.env)
 
         did_commit = git_extensions.commit_changes(self.deployment_repo, commit_message)
         if not did_commit:
