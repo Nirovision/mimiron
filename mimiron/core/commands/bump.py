@@ -93,6 +93,7 @@ class Bump(_Command):
     def _run(self):
         artifact = self._get_artifact()
         git_extensions.sync_updates(self.deployment_repo)
+        self.tf.load()
 
         if artifact is None:  # An artifact wasn't selected, end command.
             return None
