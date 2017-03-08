@@ -7,11 +7,11 @@
 
 > [Mimiron](http://www.wowhead.com/npc=33350/mimiron) is one of the Titanic Watchers. He once resided at the Temple of Invention, but is absent during the time of Loken's rebellion.
 
-Mimiron is a CLI tool whose purpose is to provide a better workflow when manging tfvars.
+Mimiron is a CLI tool that aims provide a better workflow when manging Terraform variables.
 
-When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.json` file and pass that along when you run `terraform apply -var-file=variables.json`... but where do you store `variables.json`?
+When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.json` file and pass that along when you run `terraform apply -var-file=variables.json`... but where do you store `variables.json` and how can you easily make changes?
 
-Our approach is to store non-critical variables inside the same repository as our Terraform config. Critical variables like AWS secrets, database master password are stored elsewhere and pulled in via environment variables e.g. `TF_VAR_AWS_ACCESS_KEY`.
+Our approach is to store non-sensitive variables inside the same repository as our Terraform config. Sensitive variables like your AWS secret and master db password are stored elsewhere and pulled in via environment variables e.g. `TF_VAR_aws_access_key`. Mimiron does **not** manage sensitive variables for you.
 
 We want to make simple tasks such as bumping an image version simple and Mimiron is a small CLI tool that does that. Mimiron provides a few commands to help automate the cumbersome tasks away.
 
@@ -21,7 +21,7 @@ We want to make simple tasks such as bumping an image version simple and Mimiron
 $ pip install mimiron
 ```
 
-You also need to specify a few environment variables to let Mimiron know where your terraform and tfvar repos are located:
+Export necessary environment variables to let Mimiron know where your terraform repo is located:
 
 ```bash
 export TF_DEPLOYMENT_PATH="~/workspace/terraform"
