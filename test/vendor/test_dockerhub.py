@@ -18,4 +18,3 @@ class TestDockerHub(object):
         result = dockerhub.build_image_abspath(self.auth, image_name, image_tag)
 
         assert result == expected_output
-
