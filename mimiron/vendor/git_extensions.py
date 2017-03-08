@@ -3,6 +3,7 @@ from functools import wraps
 
 import os
 
+from git import Actor
 from git.exc import GitCommandError
 
 from ..domain.vendor import UnexpectedGitError
@@ -71,6 +72,20 @@ def sync_updates(repo, push=False):
 
 
 @git_failure
+def generate_service_bump_commit_message(repo, service_name, env, tag):
+    author = Actor.author(repo.config_reader())
+    return '\n'.join([
+        'chore(tfvars): bump %s#%s @%s' % (service_name, tag[:7], env),
+        '\n'
+        'committed-by: %s <%s>' % (author.name, author.email),
+        'service-tag: %s' % tag,
+        'environment: %s' % env,
+        '\n'
+        'Commit made via Mimiron (https://github.com/ImageIntelligence/mimiron)'
+    ])
+
+
+@git_failure
 def get_recent_commits(repo, limit=10):
     return list(repo.iter_commits(max_count=limit))
 
@@ -81,8 +96,10 @@ def commit_changes(repo, commit_message):
         return False
 
     repo.git.add(u=True)
-    commit = repo.index.commit(commit_message)
-    io.info('commit message: "%s"' % commit_message)
+
+    actor = Actor('Mimiron', email='')
+    commit = repo.index.commit(commit_message, author=actor, committer=actor)
+    io.info('commit message: "%s"' % commit_message.split('\n')[0])
     io.info('created commit: (id) %s' % commit.name_rev)
     return True
 

@@ -104,8 +104,9 @@ class Bump(_Command):
         self.tf.update_var(self.artifact_key, image_abspath)
         self.tf.save()
 
-        commit_message = 'chore(variables): bumped %s@%s' % (self.service_name, self.env)
-
+        commit_message = git_extensions.generate_service_bump_commit_message(
+            self.deployment_repo, self.service_name, self.env, tag
+        )
         did_commit = git_extensions.commit_changes(self.deployment_repo, commit_message)
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % self.deployment_repo.working_dir)
