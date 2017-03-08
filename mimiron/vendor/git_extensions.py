@@ -75,7 +75,7 @@ def sync_updates(repo, push=False):
 def generate_service_bump_commit_message(repo, service_name, env, tag):
     author = Actor.author(repo.config_reader())
     return '\n'.join([
-        'chore(tfvars): bump %s#%s @%s' % (service_name, tag[:7], env),
+        'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env),
         '\n'
         'committed-by: %s <%s>' % (author.name, author.email),
         'service-tag: %s' % tag,
