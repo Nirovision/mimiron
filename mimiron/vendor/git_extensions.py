@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from mimiron import __version__
+
 from functools import wraps
 
 import os
@@ -81,7 +83,7 @@ def generate_service_bump_commit_message(repo, service_name, env, tag):
         'service-tag: %s' % tag,
         'environment: %s' % env,
         '\n'
-        'Commit made via Mimiron (https://github.com/ImageIntelligence/mimiron)'
+        'Committed via Mimiron v%s (https://github.com/ImageIntelligence/mimiron)' % __version__
     ])
 
 
