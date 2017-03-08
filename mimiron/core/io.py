@@ -62,6 +62,6 @@ def collect_input(prompt, selection):
             if id_ < 0:
                 continue
             return selection[id_]
-        except (ValueError, IndexError):
+        except (ValueError, TypeError, IndexError):
             continue
     return None
