@@ -43,7 +43,7 @@ class TFVarsConfig(object):
                 data = json.dumps(self._config, f, ensure_ascii=False, indent=2, sort_keys=True)
                 data = data.split('\n')
                 data = [d.rstrip() for d in data]
-                data = '\n'.join(data)
+                data = '\n'.join(data) + '\n'
                 f.write(data)
         except IOError:
             raise TFVarsMissingConfigFile(self.tfvars_path)
