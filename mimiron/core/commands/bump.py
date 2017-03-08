@@ -8,7 +8,6 @@ from . import Command as _Command
 from .. import io
 
 from ...domain.vendor import NoChangesEmptyCommit
-from ...domain.vendor import SyncRemoteError
 from ...vendor.terraform import TFVarsConfig
 from ...vendor import dockerhub, git_extensions
 
