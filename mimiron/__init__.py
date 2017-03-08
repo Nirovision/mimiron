@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 
-__version_info__ = (0, 2, 5)
+__version_info__ = (0, 2, 6)
 __version__ = '.'.join([unicode(i) for i in __version_info__])
 
 __author__ = 'David Vuong'
