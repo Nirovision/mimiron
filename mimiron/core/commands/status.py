@@ -12,22 +12,27 @@ class Status(_Command):
         self.tf = TFVarsConfig(self.tfvars_path)
         self.tf.load()
 
+    def _format_row(self, artifact):
+        image_tag = artifact['image'].split(':')[-1]
+        desired_count = int(artifact['desired_count'])
+        if desired_count == 0:
+            desired_count = io.add_color('zero', 'red')
+
+        cpu = artifact.get('cpu', io.add_color('n/a', 'red'))
+        memory = artifact.get('memory', io.add_color('n/a', 'red'))
+        return [image_tag, desired_count, cpu, memory]
+
     def _run(self):
         services = self.tf.get_services()
 
         docker_org = self.config['DOCKER_ORG']
         table_data = [
-            ['id', 'name', 'image tag (%s)' % docker_org, 'running', 'is active'],
+            ['id', 'name', 'image tag (%s)' % docker_org, 'desired count', 'cpu units', 'memory (mb)'],
         ]
         for i, service_name in enumerate(sorted(services.iterkeys()), 1):
             artifact = services[service_name]
-
-            image_tag = artifact['image'].split(':')[-1]
-            running = artifact['desired_count']
-            is_active = 'yes' if int(running) > 0 else 'no'
-
-            table_data.append([i, service_name, image_tag, running, is_active])
+            table_data.append([i, service_name] + self._format_row(artifact))
 
         io.info('displaying "%s" active&non-active services on %s' % (docker_org, self.env))
         io.print_table(table_data, 'current %s artifacts' % self.env)
-        io.warn('only dockerized services are shown here currently...')
+        io.warn('only dockerized services are shown here (i.e. no lambda, or ami)')
