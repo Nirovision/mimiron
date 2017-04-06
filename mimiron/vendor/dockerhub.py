@@ -69,7 +69,7 @@ def list_image_tags(auth, image_name, page_size=100):
         auth.org, image_name, page_size,
     )
     response = _api_request(endpoint, requests.get, auth)
-    return response['results'] if response is not None else response
+    return response['results'] if response is not None else []
 
 
 def build_image_abspath(auth, image_name, tag):
