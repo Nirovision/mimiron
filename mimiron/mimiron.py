@@ -4,8 +4,8 @@
 mimiron.py
 
 usage:
-    mim bump|b <service> [--env=<env>] [--latest] [--no-push]
-    mim status|st [--env=<env>]
+    mim (bump|b) <service> [--env=<env>] [--latest] [--no-push]
+    mim (status|st) [--env=<env>]
 
 commands:
     bump|b        bumps the <service> with an image <artifact>
