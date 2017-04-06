@@ -24,10 +24,19 @@ $ pip install mimiron
 Export necessary environment variables to let Mimiron know where your terraform repo is located:
 
 ```bash
+# Path to your Terraform configuration
 export TF_DEPLOYMENT_PATH="~/workspace/terraform"
+
+# Docker username, password and organisation (or account)
 export DOCKER_USERNAME=""
 export DOCKER_PASSWORD=""
 export DOCKER_ORG=""
+```
+
+There are also optional environment variables you can override:
+
+```bash
+export DEFAULT_ENVIRONMENT=staging
 ```
 
 ## Assumptions
