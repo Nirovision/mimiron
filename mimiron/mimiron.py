@@ -4,8 +4,8 @@
 mimiron.py
 
 usage:
-    mim bump|b <service> <env> [--latest] [--no-push]
-    mim status|st <env>
+    mim bump|b <service> [--env=<env>] [--latest] [--no-push]
+    mim status|st [--env=<env>]
 
 commands:
     bump|b        bumps the <service> with an image <artifact>
@@ -14,7 +14,7 @@ commands:
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
     <service>     the application we're targeting
-    <env>         the environment we want to change
+    --env=<env>   the environment we want to change [default: %s]
 
 options:
     --no-push     make local changes without pushing to remote
@@ -38,8 +38,9 @@ from .domain.commands import UnexpectedCommand
 
 
 def _parse_user_input(args):
-    env = args['<env>']
-
+    env = args['--env']
+    if env == 'production':
+        io.warn('!!!beware!!! you are operating inside --env="%s" environment!' % env)
     if any([args['bump'], args['b']]):
         return bump.Bump(
             env=env,
@@ -53,10 +54,12 @@ def _parse_user_input(args):
 
 
 def main():
-    args = docopt(__doc__, version=__version__)
     try:
         config.validate()
         config.post_process()
+
+        definition = __doc__ % config.config['DEFAULT_ENVIRONMENT']
+        args = docopt(definition, version=__version__)
 
         _parse_user_input(args)
     except KeyboardInterrupt:
