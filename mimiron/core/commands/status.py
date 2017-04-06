@@ -33,6 +33,6 @@ class Status(_Command):
             artifact = services[service_name]
             table_data.append([i, service_name] + self._format_row(artifact))
 
-        io.info('displaying "%s" active&non-active services on %s' % (docker_org, self.env))
+        io.info('displaying "%s" active&inactive services on %s' % (docker_org, self.env))
         io.print_table(table_data, 'current %s artifacts' % self.env)
-        io.warn('only dockerized services are shown here (i.e. no lambda, or ami)')
+        io.warn('only dockerized services are shown here (i.e. no lambda or ami)')
