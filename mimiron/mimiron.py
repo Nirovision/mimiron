@@ -55,11 +55,11 @@ def _parse_user_input(args):
 
 def main():
     try:
-        config.validate()
-        config.post_process()
-
         definition = __doc__ % config.config['DEFAULT_ENVIRONMENT']
         args = docopt(definition, version=__version__)
+
+        config.validate()
+        config.post_process()
 
         _parse_user_input(args)
     except KeyboardInterrupt:
