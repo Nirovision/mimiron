@@ -117,7 +117,7 @@ class Bump(_Command):
 
         if self.env == 'production' and did_commit:
             tag_name = datetime.now().strftime("%Y%m%d%H%M%S")
-            git_extensions.tag_commit(self.deployment_repo, tag_name)
+            git_extensions.tag_commit(self.deployment_repo, tag_name, commit_message)
 
         if self.should_push:
             git_extensions.push_commits(self.deployment_repo)
