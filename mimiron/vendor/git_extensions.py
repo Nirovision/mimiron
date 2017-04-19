@@ -107,7 +107,14 @@ def commit_changes(repo, commit_message):
 
 
 @git_failure
+def tag_commit(repo, name):
+    tag = repo.create_tag(name, ref='HEAD') 
+    io.info('created tag: (name) %s' % name)
+    return True
+
+
+@git_failure
 def push_commits(repo):
     io.info('pushing changes to %s' % repo.remotes.origin.refs[0].name)
-    repo.remotes.origin.push()
+    repo.git.push('origin', 'master', tags=True)
     io.ok('successfully pushed changes to %s' % repo.remotes.origin.refs[0].name)
