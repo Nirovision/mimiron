@@ -108,7 +108,7 @@ def commit_changes(repo, commit_message):
 
 @git_failure
 def tag_commit(repo, name):
-    tag = repo.create_tag(name, ref='HEAD') 
+    tag = repo.create_tag(name, ref='HEAD')
     io.info('created tag: (name) %s' % name)
     return True
 
