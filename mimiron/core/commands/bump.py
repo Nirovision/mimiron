@@ -111,8 +111,13 @@ class Bump(_Command):
             self.deployment_repo, self.service_name, self.env, tag
         )
         did_commit = git_extensions.commit_changes(self.deployment_repo, commit_message)
+
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % self.deployment_repo.working_dir)
+
+        if self.env == 'production' and did_commit:
+            tag_name = datetime.now().strftime("%Y%m%d%H%M%S")
+            git_extensions.tag_commit(self.deployment_repo, tag_name, commit_message)
 
         if self.should_push:
             git_extensions.push_commits(self.deployment_repo)
