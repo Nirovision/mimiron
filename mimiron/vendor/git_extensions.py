@@ -80,6 +80,7 @@ def generate_service_bump_commit_message(repo, service_name, env, tag):
         'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env),
         '\n'
         'committed-by: %s <%s>' % (author.name, author.email),
+        'service-name: %s' % service_name,
         'service-tag: %s' % tag,
         'environment: %s' % env,
         '\n'
@@ -108,7 +109,7 @@ def commit_changes(repo, commit_message):
 
 @git_failure
 def tag_commit(repo, name, message):
-    tag = repo.create_tag(name, ref='HEAD', message=message)
+    repo.create_tag(name, ref='HEAD', message=message)
     io.info('created tag: (name) %s' % name)
     return True
 
