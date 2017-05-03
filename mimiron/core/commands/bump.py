@@ -13,7 +13,7 @@ from ...vendor import dockerhub, git_extensions
 
 
 class Bump(_Command):
-    MAX_ARTIFACTS_SHOWN = 15
+    MAX_ARTIFACTS_SHOWN = 20
 
     def _validate_and_configure(self):
         super(self.__class__, self)._validate_and_configure()
@@ -28,6 +28,7 @@ class Bump(_Command):
 
         self.should_push = self.kwargs['should_push']
         self.is_latest = self.kwargs['is_latest']
+        self.is_show_all = self.kwargs['is_show_all']
 
         self.artifact_key = self.tf.get_artifact_key(self.service_name_normalized)
 
@@ -81,7 +82,10 @@ class Bump(_Command):
     def _get_artifact(self):
         io.info('retrieving image tags for "%s" from dockerhub' % self.service_name)
         artifacts = dockerhub.list_image_tags(self.auth, self.service_name)
-        artifacts = artifacts[:self.__class__.MAX_ARTIFACTS_SHOWN]
+
+        # Truncate artifacts we get from DockerHub to make it more readable.
+        if not self.is_show_all:
+            artifacts = artifacts[:self.__class__.MAX_ARTIFACTS_SHOWN]
 
         if not artifacts:
             io.err('no artifacts were found for "%s/%s"' % (self.config['DOCKER_ORG'], self.service_name))

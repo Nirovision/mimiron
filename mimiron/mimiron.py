@@ -4,17 +4,18 @@
 mimiron.py
 
 usage:
-    mim (bump|b) <service> [--env=<env>] [--latest] [--no-push]
+    mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
 
 commands:
-    bump|b        bumps the <service> with an image <artifact>
-    status|st     shows the currently used artifact id for <env>
+    (bump|b)      bumps the <service> with an image <artifact>
+    (status|st)   shows the currently used artifact id for <env>
 
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
     <service>     the application we're targeting
     --env=<env>   the environment we want to change [default: %s]
+    --show-all    show all artifacts for the current service
 
 options:
     --no-push     make local changes without pushing to remote
@@ -46,6 +47,7 @@ def _parse_user_input(args):
             env=env,
             service=args['<service>'],
             is_latest=args['--latest'],
+            is_show_all=args['--show-all'],
             should_push=not args['--no-push']
         )
     if any([args['status'], args['st']]):
