@@ -3,14 +3,15 @@ from . import Command as _Command
 from .. import io
 
 from ...vendor.terraform import TFVarsConfig
+from ...vendor import git_extensions
 
 
 class Status(_Command):
     def _validate_and_configure(self):
         super(self.__class__, self)._validate_and_configure()
 
+        self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
         self.tf = TFVarsConfig(self.tfvars_path)
-        self.tf.load()
 
     def _format_row(self, artifact):
         image_tag = artifact['image'].split(':')[-1]
@@ -23,6 +24,9 @@ class Status(_Command):
         return [image_tag, desired_count, cpu, memory]
 
     def _run(self):
+        git_extensions.sync_updates(self.deployment_repo)
+        self.tf.load()  # sync_updates may have changed tfvars
+
         services = self.tf.get_services()
 
         docker_org = self.config['DOCKER_ORG']
