@@ -53,17 +53,18 @@ export DEFAULT_ENVIRONMENT=staging
 mimiron.py
 
 usage:
-    mim bump|b <service> [--env=<env>] [--latest] [--no-push]
-    mim status|st [--env=<env>]
+    mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
+    mim (status|st) [--env=<env>]
 
 commands:
-    bump|b        bumps the <service> with an image <artifact>
-    status|st     shows the currently used artifact id for <env>
+    (bump|b)      bumps the <service> with an image <artifact>
+    (status|st)   shows the currently used artifact id for <env>
 
 arguments:
     <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
     <service>     the application we're targeting
     --env=<env>   the environment we want to change [default: staging]
+    --show-all    show all artifacts for the current service
 
 options:
     --no-push     make local changes without pushing to remote
