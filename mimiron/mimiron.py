@@ -6,23 +6,28 @@ mimiron.py
 usage:
     mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
+    mim (history|h) <service> [--env=<env>]
+    mim (deploy|d) [--show-last=<n>] [--env=<env>] [--no-push]
 
 commands:
-    (bump|b)      bumps the <service> with an image <artifact>
-    (status|st)   shows the currently used artifact id for <env>
+    (bump|b)         bumps the <service> with an image <artifact>
+    (status|st)      shows the currently used artifact id for <env>
+    (history|h)      shows history and statistics around deployments
+    (deploy|d)       triggers a deploy for an environment --env=<env>
 
 arguments:
-    <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
-    <service>     the application we're targeting
-    --env=<env>   the environment we want to change [default: %s]
-    --show-all    show all artifacts for the current service
+    <artifact>       the deployment artifact we are pushing (e.g. Docker image/AMI)
+    <service>        the application we're targeting
+    --env=<env>      the environment we want to change [default: %s]
+    --show-all       show all artifacts for the current service
+    --show-last=<n>  show the last n commits [default: %s]
 
 options:
-    --no-push     make local changes without pushing to remote
-    --latest      use the latest artifact when updating a service
+    --no-push        make local changes without pushing to remote
+    --latest         use the latest artifact when updating a service
 
-    -h --help     shows this
-    -v --version  shows version
+    -h --help        shows this
+    -v --version     shows version
 """
 from __future__ import print_function
 
@@ -33,6 +38,8 @@ import config
 from .core import io
 from .core.commands import bump
 from .core.commands import status
+from .core.commands import history
+from .core.commands import deploy
 
 from .domain import BaseMimironException
 from .domain.commands import UnexpectedCommand
@@ -52,12 +59,23 @@ def _parse_user_input(args):
         )
     if any([args['status'], args['st']]):
         return status.Status(env=env)
+    if any([args['history'], args['h']]):
+        return history.History(env=env)
+    if any([args['deploy'], args['d']]):
+        return deploy.Deploy(
+            env=env,
+            show_last_limit=args['--show-last'],
+            should_push=not args['--no-push']
+        )
     raise UnexpectedCommand
 
 
 def main():
     try:
-        definition = __doc__ % config.config['DEFAULT_ENVIRONMENT']
+        definition = __doc__ % (
+            config.config['DEFAULT_ENVIRONMENT'],
+            config.config['DEFAULT_SHOW_LAST_LIMIT']
+        )
         args = docopt(definition, version=__version__)
 
         config.validate()

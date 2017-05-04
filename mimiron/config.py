@@ -16,6 +16,7 @@ config = {
     'DOCKER_PASSWORD': os.environ.get('DOCKER_PASSWORD'),
     'DOCKER_ORG': os.environ.get('DOCKER_ORG'),
     'DEFAULT_ENVIRONMENT': os.environ.get('DEFAULT_ENVIRONMENT', 'staging'),
+    'DEFAULT_SHOW_LAST_LIMIT': 10,
 }
 
 
