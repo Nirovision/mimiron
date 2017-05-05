@@ -20,6 +20,14 @@ def sync_updates(repo, push=False):
     """Updates the local `repo` with origin, pulling and push when necessary.
 
     True is returned when any changes were made (aside fetch), otherwise False.
+
+    Args:
+        repo (git.objects.Repo): The git repository to sync updates on
+        push (bool): True to push local changes, False to only pull
+
+    Returns:
+        bool: True if `repo` was sync'd, False otherwise
+
     """
     ref = repo.remotes.origin.refs[0].name
     repo_dir = repo.working_dir
@@ -53,8 +61,21 @@ def sync_updates(repo, push=False):
 
 
 @git_failure
-def generate_service_bump_commit_message(repo, service_name, env, tag):
-    author = helpers.get_host_author(repo)
+def generate_service_bump_commit_message(repo, service_name, env, tag, author=None):
+    """Generates an appropriate service bump commit message.
+
+    Args:
+        repo (git.objects.Repo): The git repository to commit against
+        service_name (str): The service/app you're bumping
+        env (str): The infrastructure you're bumping against
+        tag (str): The service/app artifact tag (e.g. Docker tag)
+        author (Optional[git.objects.Actor]): Commit author, host user by default
+
+    Returns:
+        str: The formatted bump commit message
+
+    """
+    author = author if author else helpers.get_host_author(repo)
     return '\n'.join([
         'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env),
         '\n'
@@ -68,10 +89,21 @@ def generate_service_bump_commit_message(repo, service_name, env, tag):
 
 
 @git_failure
-def generate_commit_message(repo, env):
-    author = helpers.get_host_author(repo)
+def generate_commit_message(repo, env, author=None):
+    """Generates a generic commit message.
+
+    Args:
+        repo (git.objects.Repo): The git repository to commit against
+        env (str): The infrastructure you're bumping against
+        author (Optional[git.objects.Actor]): Commit author, host user by default
+
+    Returns:
+        str: The generated generic commit message
+
+    """
+    author = author if author else helpers.get_host_author(repo)
     return '\n'.join([
-        'chore(bump): empty commit',
+        'chore(git): trigger deploy with empty commit',
         '\n'
         'committed-by: %s <%s>' % (author.name, author.email),
         'environment: %s' % env,
@@ -81,11 +113,22 @@ def generate_commit_message(repo, env):
 
 
 def generate_deploy_commit_tag():
+    """Generates the next deploy tag used to trigger a deploy."""
     return datetime.now().strftime('%s')
 
 
 @git_failure
 def commit_changes(repo, commit_message):
+    """Commits all changes (staged and untracked) in a single commit.
+
+    Args:
+        repo (git.objects.Repo): The git repository to commit changes to
+        commit_message (str): The commit message to use
+
+    Returns:
+        bool: True if a commit was made, False otherwise
+
+    """
     if not repo.is_dirty():
         return False
 
@@ -100,6 +143,19 @@ def commit_changes(repo, commit_message):
 
 @git_failure
 def commit_empty_changes(repo, commit_message):
+    """Similar to `git_extensions.extensions.commit_changes` except --allow-empty.
+
+    Args:
+        repo (git.objects.Repo): The git repository to commit changes to
+        commit_message (str): The commit message to use
+
+    Returns:
+        bool: True if a commit was made, False otherwise
+
+    """
+    if repo.is_dirty():
+        return False
+
     repo.git.commit(
         *shlex.split('--allow-empty -m "%s" --author "%s"' % (commit_message, const.COMMIT_AUTHOR_NAME))
     )
@@ -111,9 +167,21 @@ def commit_empty_changes(repo, commit_message):
 
 
 @git_failure
-def tag_commit(repo, name, message, ref='HEAD'):
-    repo.create_tag(name, ref=ref, message=message)
-    io.info('created tag: (name) %s' % name)
+def tag_commit(repo, tag_name, message, ref='HEAD'):
+    """Creates a tag to the `ref` of the given git `repo`.
+
+    Args:
+        repo (git.objects.Repo): The git repository commit changes to
+        tag_name (str): The name of the tag
+        message (str): The tag message body
+        ref (Optional[str, git.objects.Commit]): The commit to tag on
+
+    Returns:
+        bool: True if a tag was successfully created
+
+    """
+    repo.create_tag(tag_name, ref=ref, message=message)
+    io.info('created tag: (name) %s' % tag_name)
     return True
 
 
