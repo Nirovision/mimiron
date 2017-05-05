@@ -5,6 +5,8 @@ from datetime import datetime
 from . import Command as _Command
 from .. import io
 
+from .. import constants as const
+
 from ..util.time import pretty_print_datetime
 from ...domain.vendor import NoChangesEmptyCommit
 
@@ -115,7 +117,7 @@ class Bump(_Command):
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % self.deployment_repo.working_dir)
 
-        if self.env == 'production' and did_commit:
+        if self.env == const.PRODUCTION and did_commit:
             git_ext.tag_commit(
                 self.deployment_repo,
                 git_ext.generate_deploy_commit_tag(),

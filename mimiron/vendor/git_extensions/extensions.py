@@ -12,6 +12,7 @@ from .util import git_failure
 
 from ...domain.vendor import FetchRemoteUnknownNextStep
 from ...core import io
+from ...core import constants as const
 
 
 @git_failure
@@ -89,7 +90,7 @@ def commit_changes(repo, commit_message):
         return False
 
     repo.git.add(u=True)
-    actor = Actor('Mimiron', email='')
+    actor = Actor(const.COMMIT_AUTHOR_NAME, email=const.COMMIT_AUTHOR_EMAIL)
     commit = repo.index.commit(commit_message, author=actor, committer=actor)
 
     io.info('commit message: "%s"' % commit_message.split('\n')[0])
@@ -100,7 +101,7 @@ def commit_changes(repo, commit_message):
 @git_failure
 def commit_empty_changes(repo, commit_message):
     repo.git.commit(
-        *shlex.split('--allow-empty -m "%s" --author "Mimiron"' % commit_message)
+        *shlex.split('--allow-empty -m "%s" --author "%s"' % (commit_message, const.COMMIT_AUTHOR_NAME))
     )
     commit = repo.iter_commits().next()
 

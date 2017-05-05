@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from . import Command as _Command
 from .. import io
+from .. import constants as const
 from ..util.time import pretty_print_datetime
 from ...vendor.git_extensions import extensions as git_ext
 
@@ -43,7 +44,7 @@ class Deploy(_Command):
         git_ext.sync_updates(self.deployment_repo)
 
         commit_message = git_ext.generate_commit_message(self.deployment_repo, self.env)
-        if self.env == 'production':
+        if self.env == const.PRODUCTION:
             commit = self._prompt_commit_selection()
             if not commit:
                 return None

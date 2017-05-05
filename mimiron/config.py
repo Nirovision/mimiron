@@ -9,13 +9,15 @@ from .domain.config import MissingDockerCredentials, MissingDockerOrg
 from .domain.config import InvalidRepositoryPath
 from .domain.vendor import InvalidGitRepo
 
+from .core import constants as const
+
 config = {
     'TF_DEPLOYMENT_PATH': os.environ.get('TF_DEPLOYMENT_PATH'),
     'TF_DEPLOYMENT_REPO': None,
     'DOCKER_USERNAME': os.environ.get('DOCKER_USERNAME'),
     'DOCKER_PASSWORD': os.environ.get('DOCKER_PASSWORD'),
     'DOCKER_ORG': os.environ.get('DOCKER_ORG'),
-    'DEFAULT_ENVIRONMENT': os.environ.get('DEFAULT_ENVIRONMENT', 'staging'),
+    'DEFAULT_ENVIRONMENT': os.environ.get('DEFAULT_ENVIRONMENT', const.STAGING),
     'DEFAULT_SHOW_LAST_LIMIT': 10,
 }
 

@@ -44,11 +44,14 @@ from .core.commands import deploy
 from .domain import BaseMimironException
 from .domain.commands import UnexpectedCommand
 
+from .core import constants as const
+
 
 def _parse_user_input(args):
-    env = args['--env']
-    if env == 'production':
+    env = args['--env'].lower()
+    if env == const.PRODUCTION:
         io.warn('!!!beware!!! you are operating inside --env="%s" environment!' % env)
+
     if any([args['bump'], args['b']]):
         return bump.Bump(
             env=env,

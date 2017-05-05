@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
+from ..constants import PRODUCTION, STAGING
 from ...config import config
-from ..environments import is_valid_env
 from ...domain.commands import InvalidEnvironment
 
 
@@ -18,7 +18,8 @@ class Command(object):
 
     def _validate_and_configure(self):
         env = self.kwargs.get('env')
-        if env is not None and not is_valid_env(env):
+
+        if env not in [PRODUCTION, STAGING]:  # only 2 for now.
             raise InvalidEnvironment(env)
 
         self.env = env
