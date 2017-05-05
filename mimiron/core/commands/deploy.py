@@ -2,7 +2,7 @@
 from . import Command as _Command
 from .. import io
 from ..util.time import pretty_print_datetime
-from ...vendor import git_extensions
+from ...vendor.git_extensions import extensions as git_ext
 
 
 class Deploy(_Command):
@@ -40,24 +40,24 @@ class Deploy(_Command):
         return io.collect_input('select the commit you want to deploy [q]:', commits)
 
     def _run(self):
-        git_extensions.sync_updates(self.deployment_repo)
+        git_ext.sync_updates(self.deployment_repo)
 
-        commit_message = git_extensions.generate_commit_message(self.deployment_repo, self.env)
+        commit_message = git_ext.generate_commit_message(self.deployment_repo, self.env)
         if self.env == 'production':
             commit = self._prompt_commit_selection()
             if not commit:
                 return None
-            git_extensions.tag_commit(
+            git_ext.tag_commit(
                 self.deployment_repo,
-                git_extensions.generate_deploy_commit_tag(),
+                git_ext.generate_deploy_commit_tag(),
                 commit_message,
                 ref=commit
             )
         else:
-            git_extensions.commit_empty_changes(self.deployment_repo, commit_message)
+            git_ext.commit_empty_changes(self.deployment_repo, commit_message)
 
         if self.should_push:
-            git_extensions.push_commits(self.deployment_repo)
+            git_ext.push_commits(self.deployment_repo)
         else:
             io.warn('commit to tfvars was NOT pushed to remote!')
             io.warn("it's your responsibility to bundle changes and explicitly push")

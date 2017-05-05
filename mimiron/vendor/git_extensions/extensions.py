@@ -1,41 +1,17 @@
 # -*- coding: utf-8 -*-
 from mimiron import __version__
 
+import os
 import shlex
 from datetime import datetime
-from functools import wraps
-
-import os
 
 from git import Actor
-from git.exc import GitCommandError
 
-from ..domain.vendor import UnexpectedGitError
-from ..domain.vendor import FetchRemoteUnknownNextStep
-from ..core import io
+from . import helpers
+from .util import git_failure
 
-
-def git_failure(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        except GitCommandError as e:
-            raise UnexpectedGitError(e)
-    return wrapper
-
-
-@git_failure
-def get_ahead_behind_count(repo):
-    branch = repo.active_branch
-
-    commits_behind = repo.iter_commits('%s..origin/%s' % (branch, branch))
-    commits_behind = sum(1 for _ in commits_behind)
-
-    commits_ahead = repo.iter_commits('origin/%s..%s' % (branch, branch))
-    commits_ahead = sum(1 for _ in commits_ahead)
-
-    return commits_ahead, commits_behind
+from ...domain.vendor import FetchRemoteUnknownNextStep
+from ...core import io
 
 
 @git_failure
@@ -51,7 +27,7 @@ def sync_updates(repo, push=False):
     io.info('fetching remote for "%s"@:%s' % (os.path.split(repo_dir)[-1], branch))
     repo.remotes.origin.fetch()
 
-    ahead, behind = get_ahead_behind_count(repo)
+    ahead, behind = helpers.get_ahead_behind_count(repo)
     is_dirty = repo.is_dirty()
 
     if not ahead and not behind and not is_dirty:
@@ -76,13 +52,8 @@ def sync_updates(repo, push=False):
 
 
 @git_failure
-def get_host_author(repo):
-    return Actor.author(repo.config_reader())
-
-
-@git_failure
 def generate_service_bump_commit_message(repo, service_name, env, tag):
-    author = get_host_author(repo)
+    author = helpers.get_host_author(repo)
     return '\n'.join([
         'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env),
         '\n'
@@ -97,7 +68,7 @@ def generate_service_bump_commit_message(repo, service_name, env, tag):
 
 @git_failure
 def generate_commit_message(repo, env):
-    author = get_host_author(repo)
+    author = helpers.get_host_author(repo)
     return '\n'.join([
         'chore(bump): empty commit',
         '\n'

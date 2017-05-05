@@ -5,10 +5,12 @@ from datetime import datetime
 from . import Command as _Command
 from .. import io
 
-from ...domain.vendor import NoChangesEmptyCommit
-from ...vendor.terraform import TFVarsConfig
-from ...vendor import dockerhub, git_extensions
 from ..util.time import pretty_print_datetime
+from ...domain.vendor import NoChangesEmptyCommit
+
+from ...vendor.terraform import TFVarsConfig
+from ...vendor import dockerhub
+from ...vendor.git_extensions import extensions as git_ext
 
 
 class Bump(_Command):
@@ -96,7 +98,7 @@ class Bump(_Command):
             return None
         tag = artifact['name']
 
-        git_extensions.sync_updates(self.deployment_repo)
+        git_ext.sync_updates(self.deployment_repo)
         self.tf.load()
 
         image_abspath = dockerhub.build_image_abspath(self.auth, self.service_name, tag)
@@ -105,23 +107,23 @@ class Bump(_Command):
         self.tf.update_var(self.artifact_key, image_abspath)
         self.tf.save()
 
-        commit_message = git_extensions.generate_service_bump_commit_message(
+        commit_message = git_ext.generate_service_bump_commit_message(
             self.deployment_repo, self.service_name, self.env, tag
         )
-        did_commit = git_extensions.commit_changes(self.deployment_repo, commit_message)
+        did_commit = git_ext.commit_changes(self.deployment_repo, commit_message)
 
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % self.deployment_repo.working_dir)
 
         if self.env == 'production' and did_commit:
-            git_extensions.tag_commit(
+            git_ext.tag_commit(
                 self.deployment_repo,
-                git_extensions.generate_deploy_commit_tag(),
+                git_ext.generate_deploy_commit_tag(),
                 commit_message
             )
 
         if self.should_push:
-            git_extensions.push_commits(self.deployment_repo)
+            git_ext.push_commits(self.deployment_repo)
         else:
             io.warn('commit to tfvars was NOT pushed to remote!')
             io.warn("it's your responsibility to bundle changes and explicitly push")

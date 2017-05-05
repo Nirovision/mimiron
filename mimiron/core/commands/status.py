@@ -3,7 +3,7 @@ from . import Command as _Command
 from .. import io
 
 from ...vendor.terraform import TFVarsConfig
-from ...vendor import git_extensions
+from ...vendor.git_extensions import extensions as git_ext
 
 
 class Status(_Command):
@@ -24,7 +24,7 @@ class Status(_Command):
         return [image_tag, desired_count, cpu, memory]
 
     def _run(self):
-        git_extensions.sync_updates(self.deployment_repo)
+        git_ext.sync_updates(self.deployment_repo)
         self.tf.load()  # sync_updates may have changed tfvars
 
         services = self.tf.get_services()

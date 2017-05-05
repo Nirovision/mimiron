@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import Command as _Command
-from ...vendor import git_extensions
+from ...vendor.git_extensions import extensions as git_ext
 
 
 class History(_Command):
@@ -15,5 +15,5 @@ class History(_Command):
         return data
 
     def _run(self):
-        git_extensions.sync_updates(self.deployment_repo)
+        git_ext.sync_updates(self.deployment_repo)
         commits = self._group_commits_by_author()
