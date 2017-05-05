@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-from dateutil import tz
-
 import humanize
+from datetime import datetime
 
 from . import Command as _Command
 from .. import io
@@ -10,6 +8,7 @@ from .. import io
 from ...domain.vendor import NoChangesEmptyCommit
 from ...vendor.terraform import TFVarsConfig
 from ...vendor import dockerhub, git_extensions
+from ..util.time import pretty_print_datetime
 
 
 class Bump(_Command):
@@ -47,20 +46,15 @@ class Bump(_Command):
             ['id', 'tag name (* = current)', 'created at', 'size'],
         ]
         for i, artifact in enumerate(artifacts, 1):
-            last_updated = datetime.strptime(artifact['last_updated'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            last_updated = last_updated.replace(tzinfo=tz.gettz('UTC'))
-            last_updated = last_updated.astimezone(tz.tzlocal())
+            created_at = datetime.strptime(artifact['last_updated'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_at = pretty_print_datetime(created_at)
 
-            last_updated_friendly = last_updated.strftime('%a %d %b, %I:%M%p')
-            last_updated_humanized = humanize.naturaltime(last_updated.replace(tzinfo=None))
-
-            updated_at = '%s (%s)' % (last_updated_friendly, last_updated_humanized)
             image_size = humanize.naturalsize(artifact['full_size'])
             image_name = artifact['name']
             if image_name in current_image:  # indicate the current artifact.
                 image_name += ' *'
 
-            table_data.append([i, image_name, updated_at, image_size])
+            table_data.append([i, image_name, created_at, image_size])
         io.print_table(table_data, 'recent artifacts')
 
         # Handle the case where the selected artifact is the current artifact.
@@ -122,7 +116,7 @@ class Bump(_Command):
         if self.env == 'production' and did_commit:
             git_extensions.tag_commit(
                 self.deployment_repo,
-                datetime.now().strftime('%s'),
+                git_extensions.generate_deploy_commit_tag(),
                 commit_message
             )
 

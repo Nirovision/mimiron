@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from mimiron import __version__
 
+import shlex
+from datetime import datetime
 from functools import wraps
 
 import os
@@ -74,8 +76,13 @@ def sync_updates(repo, push=False):
 
 
 @git_failure
+def get_host_author(repo):
+    return Actor.author(repo.config_reader())
+
+
+@git_failure
 def generate_service_bump_commit_message(repo, service_name, env, tag):
-    author = Actor.author(repo.config_reader())
+    author = get_host_author(repo)
     return '\n'.join([
         'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env),
         '\n'
@@ -89,8 +96,20 @@ def generate_service_bump_commit_message(repo, service_name, env, tag):
 
 
 @git_failure
-def get_recent_commits(repo, limit=10):
-    return list(repo.iter_commits(max_count=limit))
+def generate_commit_message(repo, env):
+    author = get_host_author(repo)
+    return '\n'.join([
+        'chore(bump): empty commit',
+        '\n'
+        'committed-by: %s <%s>' % (author.name, author.email),
+        'environment: %s' % env,
+        '\n'
+        'Committed via Mimiron v%s (https://github.com/ImageIntelligence/mimiron)' % __version__
+    ])
+
+
+def generate_deploy_commit_tag():
+    return datetime.now().strftime('%s')
 
 
 @git_failure
@@ -99,17 +118,29 @@ def commit_changes(repo, commit_message):
         return False
 
     repo.git.add(u=True)
-
     actor = Actor('Mimiron', email='')
     commit = repo.index.commit(commit_message, author=actor, committer=actor)
+
     io.info('commit message: "%s"' % commit_message.split('\n')[0])
     io.info('created commit: (id) %s' % commit.name_rev)
     return True
 
 
 @git_failure
-def tag_commit(repo, name, message):
-    repo.create_tag(name, ref='HEAD', message=message)
+def commit_empty_changes(repo, commit_message):
+    repo.git.commit(
+        *shlex.split('--allow-empty -m "%s" --author "Mimiron"' % commit_message)
+    )
+    commit = repo.iter_commits().next()
+
+    io.info('commit message: "%s"' % commit_message.split('\n')[0])
+    io.info('created commit: (id) %s' % commit.name_rev)
+    return True
+
+
+@git_failure
+def tag_commit(repo, name, message, ref='HEAD'):
+    repo.create_tag(name, ref=ref, message=message)
     io.info('created tag: (name) %s' % name)
     return True
 
