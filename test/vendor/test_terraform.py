@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import pytest
-
 from mimiron.vendor.terraform import TFVarsConfig
 
 

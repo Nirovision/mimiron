@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
-import pytest
-
 from mimiron.vendor import dockerhub
 
 
