@@ -6,13 +6,11 @@ mimiron.py
 usage:
     mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
-    mim (history|h) <service> [--env=<env>]
     mim (deploy|d) [--show-last=<n>] [--env=<env>] [--no-push]
 
 commands:
     (bump|b)         bumps the <service> with an image <artifact>
     (status|st)      shows the currently used artifact id for <env>
-    (history|h)      shows history and statistics around deployments
     (deploy|d)       triggers a deploy for an environment --env=<env>
 
 arguments:
@@ -38,7 +36,6 @@ import config
 from .core import io
 from .core.commands import bump
 from .core.commands import status
-from .core.commands import history
 from .core.commands import deploy
 
 from .domain import BaseMimironException
@@ -62,8 +59,6 @@ def _parse_user_input(args):
         )
     if any([args['status'], args['st']]):
         return status.Status(env=env)
-    if any([args['history'], args['h']]):
-        return history.History(env=env)
     if any([args['deploy'], args['d']]):
         return deploy.Deploy(
             env=env,
