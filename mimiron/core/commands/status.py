@@ -15,7 +15,7 @@ class Status(_Command):
 
     def _format_row(self, artifact):
         image_tag = artifact['image'].split(':')[-1]
-        desired_count = int(artifact['desired_count'])
+        desired_count = int(artifact.get('desired_count', 0))
         if desired_count == 0:
             desired_count = io.add_color('zero', 'red')
 
