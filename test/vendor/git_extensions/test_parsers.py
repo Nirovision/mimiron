@@ -60,7 +60,7 @@ class TestGitExtensionsCommitParserV1(object):
             'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env),
             '\n'
             'committed-by: %s' % author_name,
-            ])
+        ])
         expected_output = {
             'author_name': author_name,
             'author_email': author_email,
