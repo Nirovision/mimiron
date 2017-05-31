@@ -37,6 +37,7 @@ There are also optional environment variables you can override:
 
 ```bash
 export DEFAULT_ENVIRONMENT=staging
+export DEFAULT_GIT_BRANCH=master
 ```
 
 ## Assumptions

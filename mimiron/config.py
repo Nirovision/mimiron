@@ -19,6 +19,7 @@ config = {
     'DOCKER_ORG': os.environ.get('DOCKER_ORG'),
     'DEFAULT_ENVIRONMENT': os.environ.get('DEFAULT_ENVIRONMENT', const.STAGING),
     'DEFAULT_SHOW_LAST_LIMIT': 10,
+    'DEFAULT_GIT_BRANCH': os.environ.get('DEFAULT_GIT_BRANCH', 'master'),
 }
 
 

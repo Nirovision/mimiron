@@ -11,7 +11,6 @@ class Deploy(_Command):
 
     def validate_and_configure(self):
         super(self.__class__, self).validate_and_configure()
-        self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
 
         self.show_last_limit = int(self.kwargs['show_last_limit'])
         self.should_push = self.kwargs['should_push']

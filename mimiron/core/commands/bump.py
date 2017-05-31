@@ -24,8 +24,6 @@ class Bump(_Command):
         self.tf = TFVarsConfig(self.tfvars_path)
         self.tf.load()
 
-        self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
-
         self.service_name = self.kwargs['service']
         self.service_name_normalized = self.tf.normalize_service_name(self.service_name)
 

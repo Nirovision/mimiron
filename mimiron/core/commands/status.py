@@ -10,7 +10,6 @@ class Status(_Command):
     def validate_and_configure(self):
         super(self.__class__, self).validate_and_configure()
 
-        self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
         self.tf = TFVarsConfig(self.tfvars_path)
 
     def _format_row(self, artifact):

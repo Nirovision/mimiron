@@ -3,7 +3,7 @@ import os
 
 from ..constants import PRODUCTION, STAGING
 from ...config import config
-from ...domain.commands import InvalidEnvironment
+from ...domain.commands import InvalidEnvironment, InvalidOperatingBranch
 
 
 class Command(object):
@@ -27,6 +27,12 @@ class Command(object):
             self.config['TF_DEPLOYMENT_PATH'], 'terraform/tfvars/%s.json' % self.env
         )
         self.tfvars_path = os.path.expanduser(self.tfvars_path)
+        self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
+
+        # All command operations can only operate within the default git branch.
+        active_branch = self.deployment_repo.active_branch.name
+        if active_branch != self.config['DEFAULT_GIT_BRANCH']:
+            raise InvalidOperatingBranch(active_branch)
 
     def run(self):
         raise NotImplementedError
