@@ -11,12 +11,12 @@ class Command(object):
         self.kwargs = kwargs
         self.config = conf
 
-        self._validate_and_configure()
+        self.validate_and_configure()
         self._before_run()
-        self._run()
+        self.run()
         self._after_run()
 
-    def _validate_and_configure(self):
+    def validate_and_configure(self):
         env = self.kwargs.get('env')
 
         if env not in [PRODUCTION, STAGING]:  # only 2 for now.
@@ -28,7 +28,7 @@ class Command(object):
         )
         self.tfvars_path = os.path.expanduser(self.tfvars_path)
 
-    def _run(self):
+    def run(self):
         raise NotImplementedError
 
     def _before_run(self):

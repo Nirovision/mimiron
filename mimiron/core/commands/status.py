@@ -7,8 +7,8 @@ from ...vendor.git_extensions import extensions as git_ext
 
 
 class Status(_Command):
-    def _validate_and_configure(self):
-        super(self.__class__, self)._validate_and_configure()
+    def validate_and_configure(self):
+        super(self.__class__, self).validate_and_configure()
 
         self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
         self.tf = TFVarsConfig(self.tfvars_path)
@@ -23,7 +23,7 @@ class Status(_Command):
         memory = artifact.get('memory', io.add_color('n/a', 'red'))
         return [image_tag, desired_count, cpu, memory]
 
-    def _run(self):
+    def run(self):
         git_ext.sync_updates(self.deployment_repo)
         self.tf.load()  # sync_updates may have changed tfvars
 

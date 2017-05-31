@@ -9,8 +9,8 @@ from ...vendor.git_extensions import extensions as git_ext
 class Deploy(_Command):
     MAX_SUMMARY_LIMIT = 50
 
-    def _validate_and_configure(self):
-        super(self.__class__, self)._validate_and_configure()
+    def validate_and_configure(self):
+        super(self.__class__, self).validate_and_configure()
         self.deployment_repo = self.config['TF_DEPLOYMENT_REPO']
 
         self.show_last_limit = int(self.kwargs['show_last_limit'])
@@ -40,7 +40,7 @@ class Deploy(_Command):
         io.print_table(table_data, 'recent commits')
         return io.collect_input('select the commit you want to deploy [q]:', commits)
 
-    def _run(self):
+    def run(self):
         git_ext.sync_updates(self.deployment_repo)
 
         commit_message = git_ext.generate_commit_message(self.deployment_repo, self.env)

@@ -18,8 +18,8 @@ from ...vendor.git_extensions import extensions as git_ext
 class Bump(_Command):
     MAX_ARTIFACTS_SHOWN = 20
 
-    def _validate_and_configure(self):
-        super(self.__class__, self)._validate_and_configure()
+    def validate_and_configure(self):
+        super(self.__class__, self).validate_and_configure()
 
         self.tf = TFVarsConfig(self.tfvars_path)
         self.tf.load()
@@ -93,7 +93,7 @@ class Bump(_Command):
             return self._prompt_latest_confirmation(artifacts)
         return self._prompt_artifact_selection(artifacts)
 
-    def _run(self):
+    def run(self):
         artifact = self._get_artifact()
 
         if artifact is None:  # An artifact wasn't selected, end command.
