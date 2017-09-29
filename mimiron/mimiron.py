@@ -14,7 +14,7 @@ commands:
     (deploy|d)       triggers a deploy for an environment --env=<env>
 
 arguments:
-    <artifact>       the deployment artifact we are pushing (e.g. Docker image/AMI)
+    <artifact>       the deployment artifact (Docker image) we are pushing
     <service>        the application we're targeting
     --env=<env>      the environment we want to change [default: %s]
     --show-all       show all artifacts for the current service

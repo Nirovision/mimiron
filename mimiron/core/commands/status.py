@@ -38,4 +38,4 @@ class Status(_Command):
 
         io.info('displaying "%s" active&inactive services on %s' % (docker_org, self.env))
         io.print_table(table_data, 'current %s artifacts' % self.env)
-        io.warn('only dockerized services are shown here (i.e. no lambda or ami)')
+        io.warn('only dockerized services are shown here (i.e. no lambda)')

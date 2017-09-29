@@ -13,8 +13,8 @@ class TestTerraform(object):
 
         assert result == expected_output
 
-    def test_get_artifact_key_as_non_ami(self):
-        result = self.config.get_artifact_key('my_custom_service', is_ami=False)
+    def test_get_artifact_key(self):
+        result = self.config.get_artifact_key('my_custom_service')
         expected_output = 'my_custom_service_image'
 
         assert result == expected_output
