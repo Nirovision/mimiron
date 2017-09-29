@@ -2,4 +2,4 @@ language: python
 install:
   - pip install -r requirements.txt
 script:
-  - pep8 ./ --ignore=E501,E701 && python setup.py develop && mim --help && pytest -m pytest
+  - pep8 ./ --ignore=E501,E701 && python setup.py develop && mim --help && python -m pytest
