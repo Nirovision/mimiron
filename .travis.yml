@@ -1,5 +1,5 @@
 language: python
 install:
-- make install
+  - pip install -r requirements.txt
 script:
-- make pep && python setup.py develop && mim --help && make tests
+  - make pep && python setup.py develop && mim --help && pytest -m pytest
