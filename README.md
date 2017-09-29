@@ -45,7 +45,6 @@ export DEFAULT_GIT_BRANCH=master
 * Your Terraform config repo has a dir `/terraform/tfvars/` with your tfvars in a JSON file e.g. `/terraform/tfvars/staging.json`
 * Docker image artifacts are stored in the DockerHub registry
 * Docker image artifacts are named `service_name_image` e.g. `web_marketing_image`
-* AMI artifacts are named `service_name_ami_id` e.g. `web_marketing_ami_id`
 
 ## Usage
 
@@ -56,43 +55,52 @@ mimiron.py
 usage:
     mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
+    mim (deploy|d) [--show-last=<n>] [--env=<env>] [--no-push]
 
 commands:
-    (bump|b)      bumps the <service> with an image <artifact>
-    (status|st)   shows the currently used artifact id for <env>
+    (bump|b)         bumps the <service> with an image <artifact>
+    (status|st)      shows the currently used artifact id for <env>
+    (deploy|d)       triggers a deploy for an environment --env=<env>
 
 arguments:
-    <artifact>    the deployment artifact we are pushing (e.g. Docker image/AMI)
-    <service>     the application we're targeting
-    --env=<env>   the environment we want to change [default: staging]
-    --show-all    show all artifacts for the current service
+    <artifact>       the deployment artifact (Docker image) we are pushing
+    <service>        the application we're targeting
+    --env=<env>      the environment we want to change [default: staging]
+    --show-all       show all artifacts for the current service
+    --show-last=<n>  show the last n commits [default: 10]
 
 options:
-    --no-push     make local changes without pushing to remote
-    --latest      use the latest artifact when updating a service
+    --no-push        make local changes without pushing to remote
+    --latest         use the latest artifact when updating a service
 
-    -h --help     shows this
-    -v --version  shows version
+    -h --help        shows this
+    -v --version     shows version
 ```
 
 ## Development
 
 Clone the project:
 
-```
-$ git clone git@github.com:ImageIntelligence/mimiron.git
+```bash
+git clone git@github.com:ImageIntelligence/mimiron.git
 ```
 
 Setup your virtualenv:
 
-```
-$ mkvirtualenv mimiron
+```bash
+mkvirtualenv mimiron
 ```
 
 Attach mim to your shell:
 
+```bash
+python setup.py develop
 ```
-$ python setup.py develop
+
+Testing:
+
+```bash
+python -m pytest
 ```
 
 ## Deployment
