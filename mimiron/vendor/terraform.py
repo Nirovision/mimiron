@@ -8,11 +8,6 @@ from ..domain.vendor import TFVArsConfigNeverLoaded
 
 
 class TFVarsConfig(object):
-    SUPPORTED_TYPES = {
-        'docker': 'DOCKER_IMAGE',
-        'ami': 'AMI',
-    }
-
     def __init__(self, tfvars_path):
         self.tfvars_path = tfvars_path
 
