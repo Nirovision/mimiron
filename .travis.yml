@@ -1,5 +1,7 @@
 language: python
 install:
   - pip install -r requirements.txt
+  - python setup.py develop
+  - mim --help
 script:
-  - pep8 ./ --ignore=E501,E701 && python setup.py develop && mim --help && python -m pytest
+  - pep8 ./ --ignore=E501,E701 && python -m pytest
