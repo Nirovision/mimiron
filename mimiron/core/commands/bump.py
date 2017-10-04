@@ -107,13 +107,14 @@ class Bump(_Command):
             return None
 
         git_ext.sync_updates(deployment_repo['git'])
+        deployment_repo['tfvars'].load()  # Reload tfvars in case the sync introduced new changes.
+
         image_abspath = dockerhub.build_image_abspath(
             dockerhub_auth,
             service_name,
             artifact['name'],
         )
         io.info('updating "%s"' % image_abspath)
-
         deployment_repo['tfvars'].set(artifact_key, image_abspath, env)
         deployment_repo['tfvars'].save()
 

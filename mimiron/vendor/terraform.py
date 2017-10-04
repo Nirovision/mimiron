@@ -11,13 +11,15 @@ __all__ = ['TFVarsConfig', 'TFVarsHelpers']
 
 class TFVarsConfig(object):
     def __init__(self, repo, paths):
+        self.paths = paths
         self.repo = repo
         self.data = {}
-        self._load(paths)
+
+        self.load()
         self._find_duplicates()
 
-    def _load(self, paths):
-        for path in paths:
+    def load(self):
+        for path in self.paths:
             try:
                 # NOTE: The expected file name format should be `<name>[.<group>].json`.
                 _, full_filename = os.path.split(path)
