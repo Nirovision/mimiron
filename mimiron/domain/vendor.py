@@ -6,7 +6,7 @@ from git import InvalidGitRepositoryError as _InvalidGitRepositoryError
 # PyGit custom exceptions
 
 
-class InvalidGitRepo(BaseMimironException, _InvalidGitRepositoryError):
+class InvalidGitRepository(BaseMimironException, _InvalidGitRepositoryError):
     def __init__(self, path):
         super(self.__class__, self).__init__('"%s" is an invalid git repository ' % path)
 
@@ -30,15 +30,21 @@ class SyncRemoteError(BaseMimironException):
 # Terraform variables custom exceptions
 
 
+class NoTFVarsFilesFound(BaseMimironException):
+    def __init__(self, path):
+        message = 'there are no terraform tfvar files found in "%s"' % path
+        super(self.__class__, self).__init__(message)
+
+
 class TFVarsMissingConfigFile(BaseMimironException):
     def __init__(self, path):
         message = 'cannot find terraform tfvars config "%s"' % path
         super(self.__class__, self).__init__(message)
 
 
-class TFVArsConfigNeverLoaded(BaseMimironException):
-    def __init__(self):
-        message = 'tfvars config was never loaded'
+class TFVarsDuplicateKeys(BaseMimironException):
+    def __init__(self, key, path):
+        message = 'duplicate keys found between tfvars: "%s" in "%s"' % (key, path)
         super(self.__class__, self).__init__(message)
 
 
