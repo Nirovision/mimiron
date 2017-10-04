@@ -2,24 +2,22 @@
 from . import BaseMimironException
 
 
-class DeploymentRepoNotFound(BaseMimironException):
+class ConfigLoadError(BaseMimironException):
+    def __init__(self, config_path):
+        message = 'failed to load configuration file: "%s"' % config_path
+        super(self.__class__, self).__init__(message)
+
+
+class MalformedConfig(BaseMimironException):
+    def __init__(self, error=None):
+        if error:
+            message = 'malformed config file: ' + error
+        else:
+            message = 'malformed config file... pls fix'
+        super(self.__class__, self).__init__(message)
+
+
+class DeploymentRepositoriesNotSpecified(BaseMimironException):
     def __init__(self):
-        message = 'deployment repository not found'
+        message = 'deployment repositories not found or invalid'
         super(self.__class__, self).__init__(message)
-
-
-class MissingDockerCredentials(BaseMimironException):
-    def __init__(self, missing_credential):
-        message = 'missing docker credentials "%s"' % missing_credential
-        super(self.__class__, self).__init__(message)
-
-
-class MissingDockerOrg(BaseMimironException):
-    def __init__(self):
-        message = '$DOCKER_ORG var was not specified'
-        super(self.__class__, self).__init__(message)
-
-
-class InvalidRepositoryPath(BaseMimironException):
-    def __init__(self, path):
-        super(self.__class__, self).__init__('"%s" directory does not exist' % path)
