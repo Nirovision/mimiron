@@ -16,9 +16,9 @@ commands:
 arguments:
     <artifact>       the deployment artifact (Docker image) we are pushing
     <service>        the application we're targeting
-    --env=<env>      the environment we want to change [default: %s]
+    --env=<env>      overrides the default repo environment
     --show-all       show all artifacts for the current service
-    --show-last=<n>  show the last n commits [default: %s]
+    --show-last=<n>  show the last n commits
 
 options:
     --no-push        make local changes without pushing to remote
@@ -32,11 +32,11 @@ from __future__ import print_function
 from . import __version__
 from docopt import docopt
 
-import config
 from .core import io
 from .core.commands import bump
 from .core.commands import status
 from .core.commands import deploy
+from .core.config import Config
 
 from .domain import BaseMimironException
 from .domain.commands import UnexpectedCommand
@@ -44,24 +44,22 @@ from .domain.commands import UnexpectedCommand
 from .core import constants as const
 
 
-def _parse_user_input(args):
-    env = args['--env'].lower()
-    if env == const.PRODUCTION:
-        io.warn('!!!beware!!! you are operating inside --env="%s" environment!' % env)
-
+def _parse_user_input(args, config):
     if any([args['bump'], args['b']]):
         return bump.Bump(
-            env=env,
+            config,
+            env=args['--env'],
             service=args['<service>'],
             is_latest=args['--latest'],
             is_show_all=args['--show-all'],
             should_push=not args['--no-push']
         )
     if any([args['status'], args['st']]):
-        return status.Status(env=env)
+        return status.Status(config, env=args['--env'])
     if any([args['deploy'], args['d']]):
         return deploy.Deploy(
-            env=env,
+            config,
+            env=args['--env'],
             show_last_limit=args['--show-last'],
             should_push=not args['--no-push']
         )
@@ -70,16 +68,9 @@ def _parse_user_input(args):
 
 def main():
     try:
-        definition = __doc__ % (
-            config.config['DEFAULT_ENVIRONMENT'],
-            config.config['DEFAULT_SHOW_LAST_LIMIT']
-        )
-        args = docopt(definition, version=__version__)
-
-        config.validate()
-        config.post_process()
-
-        _parse_user_input(args)
+        config = Config()
+        config.init()
+        _parse_user_input(docopt(__doc__, version=__version__), config)
     except KeyboardInterrupt:
         pass
     except BaseMimironException as e:
