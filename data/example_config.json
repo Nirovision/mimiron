@@ -1,0 +1,19 @@
+{
+  "terraformRepositories": [
+    {
+      "path": "~/workspace/deployments",
+      "defaultEnvironment": "staging",
+      "defaultGitBranch": "master"
+    },
+    {
+      "path": "~/workspace/deployments-analytics",
+      "defaultEnvironment": null,
+      "defaultGitBranch": "master"
+    }
+  ],
+  "dockerhub": {
+    "username": "docker-username",
+    "password": "docker-password",
+    "organization": "docker-organization"
+  }
+}
