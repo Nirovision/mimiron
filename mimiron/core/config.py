@@ -13,7 +13,7 @@ from ..schemas.config import config_schema
 from ..domain.config import ConfigLoadError, MalformedConfig
 from ..domain.config import DeploymentRepositoriesNotSpecified
 from ..domain.vendor import InvalidGitRepository
-from ..domain.vendor import NoTFVarFilesFound
+from ..domain.vendor import NoTFVarsFilesFound
 
 from ..vendor.terraform import TFVarsConfig
 
@@ -48,8 +48,8 @@ class Config(object):
         except ValidationError as e:
             raise MalformedConfig(e.message)
 
-    def _read_tfvars(self, repo_path):
-        """Reads all tfvars (json file) in the given `report_path`/terraform/tfvars directory.
+    def _read_tfvars(self, repo):
+        """Reads all tfvars (json file) in the given `repo['path']`/terraform/tfvars directory.
 
         Terraform deployment projects are expected to follow this structure:
 
@@ -71,16 +71,19 @@ class Config(object):
         to be applied on all groups.
 
         """
-        repo_path = os.path.join(repo_path, 'terraform/tfvars')
+        repo_path = os.path.join(repo['path'], 'terraform/tfvars')
         if not os.path.isdir(repo_path):
-            raise NoTFVarFilesFound(repo_path)
+            raise NoTFVarsFilesFound(repo_path)
 
-        tfvars = {}
+        tfvars_paths = []
         for root, dirs, files in os.walk(repo_path):
             for f in files:
-                tfvar_path = os.path.join(os.path.abspath(root), f)
-                tfvars[tfvar_path] = TFVarsConfig(tfvar_path)
-        return tfvars
+                tfvars_path = os.path.join(os.path.abspath(root), f)
+                tfvars_paths.append(tfvars_path)
+
+        if not tfvars_paths:
+            raise NoTFVarsFilesFound(repo_path)
+        return TFVarsConfig(repo, tfvars_paths)  # aggregates all tfvars files.
 
     def process(self):
         """Initialises Mimiron using the configuration found in `config_path`."""
@@ -93,8 +96,16 @@ class Config(object):
                 repo['defaultEnvironment'] = repo.get('defaultEnvironment', None)
 
                 repo['git'] = git_repo
-                repo['tfvars'] = self._read_tfvars(repo['path'])
+                repo['tfvars'] = self._read_tfvars(repo)
             except _InvalidGitRepositoryError:
                 raise InvalidGitRepository(repo['path'])
             except _NoSuchPathError:
                 raise DeploymentRepositoriesNotSpecified
+
+    def get(self, key):
+        """Retrieves the `value` in `self.data` given `key`."""
+        return self.data.get(key)
+
+    def set(self, key, value):
+        """Sets the `value` of item at `key` given `value`."""
+        self.data[key] = value
