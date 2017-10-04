@@ -75,16 +75,17 @@ def generate_service_bump_commit_message(repo, service_name, env, tag, author=No
         str: The formatted bump commit message
 
     """
+    env_name = env or 'default'  # Show 'default' if a repo does not have a default environment
     author = author if author else helpers.get_host_author(repo)
     return '\n'.join([
-        'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env),
+        'chore(tfvars): bump %s#%s "%s"' % (service_name, tag[:7], env_name),
         '\n'
         'committed-by: %s <%s>' % (author.name, author.email),
         'service-name: %s' % service_name,
         'service-tag: %s' % tag,
-        'environment: %s' % env,
+        'environment: %s' % env_name,
         '\n'
-        'Committed via Mimiron v%s (https://github.com/ImageIntelligence/mimiron)' % __version__
+        'Committed via Mimiron v%s (https://github.com/ImageIntelligence/mimiron)' % __version__,
     ])
 
 
