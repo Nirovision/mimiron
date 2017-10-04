@@ -95,6 +95,7 @@ Attach mim to your shell:
 
 ```bash
 python setup.py develop
+pip install -r requirements.txt
 ```
 
 Testing:
