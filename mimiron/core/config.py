@@ -94,6 +94,7 @@ class Config(object):
                 if git_repo.bare:
                     raise _InvalidGitRepositoryError
                 repo['defaultEnvironment'] = repo.get('defaultEnvironment', None)
+                repo['tagEnvironment'] = repo.get('tagEnvironment', None)
 
                 repo['git'] = git_repo
                 repo['tfvars'] = self._read_tfvars(repo)

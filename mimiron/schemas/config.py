@@ -11,6 +11,9 @@ config_schema = {
                     'path': {
                         'type': 'string',
                     },
+                    'tagEnvironment': {
+                        'type': ['string', 'null'],
+                    },
                     'defaultEnvironment': {
                         'type': ['string', 'null'],
                     },
