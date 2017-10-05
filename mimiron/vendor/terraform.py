@@ -67,9 +67,10 @@ class TFVarsConfig(object):
                 if k.endswith('_image'):
                     services[k.replace('_image', '')] = {}
         for service_name, service_data in services.iteritems():
-            for k, v in self.data.iteritems():
-                if k.startswith(service_name):
-                    service_data[k.replace(service_name + '_', '')] = v
+            for tfvars in self.data.values():
+                for k, v in tfvars['data'].iteritems():
+                    if k.startswith(service_name):
+                        service_data[k.replace(service_name + '_', '')] = v
         return services
 
     def find(self, key, group):
