@@ -6,6 +6,9 @@ from ...vendor.git_extensions import extensions as git_ext
 
 
 class Status(_Command):
+    def __init__(self, config, **kwargs):
+        super(self.__class__, self).__init__(config, **kwargs)
+
     def _format_row(self, artifact):
         image_tag = artifact['image'].split(':')[-1]
         desired_count = int(artifact.get('desired_count', 0))

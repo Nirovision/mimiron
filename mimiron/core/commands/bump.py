@@ -18,6 +18,9 @@ from ...vendor.terraform import TFVarsHelpers
 class Bump(_Command):
     MAX_ARTIFACTS_SHOWN = 20
 
+    def __init__(self, config, **kwargs):
+        super(self.__class__, self).__init__(config, **kwargs)
+
     def _prompt_artifact_selection(self, service_name, artifact_key, deployment_repo, env, artifacts):
         current_image = deployment_repo['tfvars'].get(artifact_key, env)
 
