@@ -25,15 +25,15 @@ $ pip install mimiron
 
 | Root Key | Sub Key | Description
 |-|-|-|
-| terraformRepositories (array<object>) | An array of objects where each object contains configuration for a Terraform repository. |  |
-| | path (string) | The path to a Terraform repository (cannot be relative but may contain ~). |
-| | defaultEnvironment (string) | Projects representing multiple environments have a default (e.g. staging, production). |
-| | tagEnvironment (string) | Usually the production environment (tags can trigger production `terraform apply`). |
-| | defaultGitBranch (string) | Some `mim` commands will check if the current branch is this before running. |
-| dockerhub (object) |  |  |
-| | username (string) | The username to your DockerHub account. |
-| | password (string) | The password to your DockerHub account. |
-| | organization | The organization your DockerHub belongs to (username if none). |
+| terraformRepositories(array<object>) | | |
+| | path(string) | The path to a Terraform repository (cannot be relative but may contain ~). |
+| | defaultEnvironment(string) | Projects representing multiple environments have a default (e.g. staging, production). |
+| | tagEnvironment(string) | Usually the production environment (tags can trigger production `terraform apply`). |
+| | defaultGitBranch(string) | Some `mim` commands will check if the current branch is this before running. |
+| dockerhub(object) | | |
+| | username(string) | The username to your DockerHub account. |
+| | password(string) | The password to your DockerHub account. |
+| | organization(string) | The organization your DockerHub belongs to (username if none). |
 
 ## Assumptions
 
