@@ -33,7 +33,7 @@ class Deploy(_Command):
         )
 
     def _prompt_commit_selection(self, deployment_repo, show_last_limit):
-        io.info('displaying @~%s most recent commits for "%s"' % (show_last_limit, deployment_repo['path']))
+        io.info('displaying @~%s most recent commits for "%s"' % (show_last_limit, deployment_repo['path'],))
 
         table_data = [
             ('id', 'commit id', 'message', 'author', 'committed at',),

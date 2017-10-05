@@ -4,7 +4,7 @@ from . import BaseMimironException
 
 class ConfigLoadError(BaseMimironException):
     def __init__(self, config_path):
-        message = 'failed to load configuration file: "%s"' % config_path
+        message = 'failed to load configuration file: "%s"' % (config_path,)
         super(ConfigLoadError, self).__init__(message)
 
 

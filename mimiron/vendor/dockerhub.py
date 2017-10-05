@@ -50,7 +50,7 @@ def _api_request(endpoint, method, auth):
         return None
 
     try:
-        response = method(endpoint, headers={'Authorization': 'JWT %s' % token})
+        response = method(endpoint, headers={'Authorization': 'JWT %s' % (token,)})
         return response.json() if response.status_code == 200 else None
     except requests.exceptions.ConnectionError:
         raise DockerConnectionError

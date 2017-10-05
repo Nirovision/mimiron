@@ -4,7 +4,7 @@ from . import BaseMimironException
 
 class InvalidEnvironment(BaseMimironException):
     def __init__(self, env):
-        message = '"%s" environment is invalid' % env
+        message = '"%s" environment is invalid' % (env,)
         super(InvalidEnvironment, self).__init__(message)
 
 
@@ -16,5 +16,5 @@ class UnexpectedCommand(BaseMimironException):
 
 class InvalidOperatingBranch(BaseMimironException):
     def __init__(self, branch):
-        message = 'operations only allowed on DEFAULT_GIT_BRANCH (current: "%s")' % branch
+        message = 'operations only allowed on DEFAULT_GIT_BRANCH (current: "%s")' % (branch,)
         super(InvalidOperatingBranch, self).__init__(message)

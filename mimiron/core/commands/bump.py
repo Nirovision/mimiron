@@ -24,7 +24,7 @@ class Bump(_Command):
     def _prompt_artifact_selection(self, service_name, artifact_key, deployment_repo, env, artifacts):
         current_image = deployment_repo['tfvars'].get(artifact_key, env)
 
-        io.info('found artifacts for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name))
+        io.info('found artifacts for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name,))
         table_data = [
             ('id', 'tag name (* = current)', 'created at', 'size',),
         ]
@@ -52,14 +52,14 @@ class Bump(_Command):
         latest_artifact = artifacts[0]
         tag = latest_artifact['name']
 
-        io.info('latest artifact version: %s' % tag)
-        input_ = io.collect_single_input('are you sure (latest: %s)? [y/n/q]:' % tag)
+        io.info('latest artifact version: %s' % (tag,))
+        input_ = io.collect_single_input('are you sure (latest: %s)? [y/n/q]:' % (tag,))
         if input_ not in ['y', None]:
             return None
         return latest_artifact
 
     def _get_artifact(self, service_name, artifact_key, deployment_repo, dockerhub_auth, env, is_show_all, is_latest):
-        io.info('retrieving image tags for "%s" from dockerhub' % service_name)
+        io.info('retrieving image tags for "%s" from dockerhub' % (service_name,))
         artifacts = dockerhub.list_image_tags(dockerhub_auth, service_name)
 
         # Truncate artifacts we get from DockerHub to make it more readable.
@@ -67,7 +67,7 @@ class Bump(_Command):
             artifacts = artifacts[:Bump.MAX_ARTIFACTS_SHOWN]
 
         if not artifacts:
-            io.err('no artifacts were found for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name))
+            io.err('no artifacts were found for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name,))
             return None
 
         if is_latest:
@@ -83,7 +83,7 @@ class Bump(_Command):
         is_latest = self.kwargs['is_latest']
         is_show_all = self.kwargs['is_show_all']
 
-        io.info('authenticating "%s" against dockerhub' % self.config.get('dockerhub')['organization'])
+        io.info('authenticating "%s" against dockerhub' % (self.config.get('dockerhub')['organization'],))
         dockerhub_auth = dockerhub.DockerHubAuthentication(
             self.config.get('dockerhub')['username'],
             self.config.get('dockerhub')['password'],
@@ -92,7 +92,7 @@ class Bump(_Command):
 
         deployment_repo = TFVarsHelpers.find_deployment_repo(service_name, self.config.get('terraformRepositories'))
         if not deployment_repo:
-            io.err('could not find service %r' % service_name)
+            io.err('could not find service %r' % (service_name,))
             return None
 
         env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
@@ -122,7 +122,7 @@ class Bump(_Command):
             service_name,
             artifact['name'],
         )
-        io.info('updating "%s"' % image_abspath)
+        io.info('updating "%s"' % (image_abspath,))
         deployment_repo['tfvars'].set(artifact_key, image_abspath, env)
         deployment_repo['tfvars'].save()
 
@@ -132,7 +132,7 @@ class Bump(_Command):
         did_commit = git_ext.commit_changes(deployment_repo['git'], commit_message)
 
         if not did_commit:
-            raise NoChangesEmptyCommit('"%s" has nothing to commit' % deployment_repo['git'].working_dir)
+            raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
 
         if env == deployment_repo['tagEnvironment'] and did_commit:
             git_ext.tag_commit(

@@ -23,7 +23,7 @@ class Status(_Command):
         services = deployment_repo['tfvars'].get_services()
         docker_org = self.config.get('dockerhub')['organization']
         table_data = [
-            ('id', 'name', 'image tag (%s)' % docker_org, 'desired count', 'cpu units', 'memory (mb)',),
+            ('id', 'name', 'image tag (%s)' % (docker_org,), 'desired count', 'cpu units', 'memory (mb)',),
         ]
         for i, service_name in enumerate(sorted(services.iterkeys()), 1):
             artifact = services[service_name]
@@ -39,6 +39,6 @@ class Status(_Command):
             table_data = self._build_status_table(deployment_repo)
             env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
             docker_org = self.config.get('dockerhub')['organization']
-            io.info('displaying "%s" active&inactive services on "%s"' % (docker_org, env))
-            io.print_table(table_data, 'current %s artifacts' % env)
+            io.info('displaying "%s" active&inactive services on "%s"' % (docker_org, env,))
+            io.print_table(table_data, 'current %s artifacts' % (env,))
         io.warn('only dockerized services are shown here (i.e. no lambda)')

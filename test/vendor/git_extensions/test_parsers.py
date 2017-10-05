@@ -26,7 +26,7 @@ class TestGitExtensionsCommitParserV1(object):
         tag = '0b5fb3e5-c91d-45f1-8c6e-5ceeaa11ec8f'
         env = 'test-environment'
 
-        message = 'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env)
+        message = 'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env,)
         expected_output = None
 
         assert parse_commit_message(message) == expected_output
@@ -39,9 +39,9 @@ class TestGitExtensionsCommitParserV1(object):
         env = 'test-environment'
 
         message = '\n'.join([
-            'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env),
+            'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env,),
             '\n'
-            'committed-by: %s <%s>' % (author_name, author_email),
+            'committed-by: %s <%s>' % (author_name, author_email,),
         ])
         expected_output = {
             'author_name': author_name,
@@ -57,9 +57,9 @@ class TestGitExtensionsCommitParserV1(object):
         env = 'test-environment'
 
         message = '\n'.join([
-            'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env),
+            'chore(tfvars): bump %s#%s "%s"' % (service_name, tag, env,),
             '\n'
-            'committed-by: %s' % author_name,
+            'committed-by: %s' % (author_name,),
         ])
         expected_output = {
             'author_name': author_name,

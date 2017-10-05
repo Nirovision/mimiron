@@ -14,4 +14,4 @@ def pretty_print_datetime(dt):
     dt_pretty_friendly = dt_pretty.strftime('%a %d %b, %I:%M%p')
     dt_pretty_humanized = humanize.naturaltime(dt_pretty.replace(tzinfo=None))
 
-    return '%s (%s)' % (dt_pretty_friendly, dt_pretty_humanized)
+    return '%s (%s)' % (dt_pretty_friendly, dt_pretty_humanized,)

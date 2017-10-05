@@ -8,7 +8,7 @@ from git import InvalidGitRepositoryError as _InvalidGitRepositoryError
 
 class InvalidGitRepository(BaseMimironException, _InvalidGitRepositoryError):
     def __init__(self, path):
-        super(InvalidGitRepository, self).__init__('"%s" is an invalid git repository ' % path)
+        super(InvalidGitRepository, self).__init__('"%s" is an invalid git repository ' % (path,))
 
 
 class FetchRemoteUnknownNextStep(BaseMimironException):
@@ -32,25 +32,25 @@ class SyncRemoteError(BaseMimironException):
 
 class NoTFVarsFilesFound(BaseMimironException):
     def __init__(self, path):
-        message = 'there are no terraform tfvar files found in "%s"' % path
+        message = 'there are no terraform tfvar files found in "%s"' % (path,)
         super(NoTFVarsFilesFound, self).__init__(message)
 
 
 class TFVarsMissingConfigFile(BaseMimironException):
     def __init__(self, path):
-        message = 'cannot find terraform tfvars config "%s"' % path
+        message = 'cannot find terraform tfvars config "%s"' % (path,)
         super(TFVarsMissingConfigFile, self).__init__(message)
 
 
 class TFVarsDuplicateKeys(BaseMimironException):
     def __init__(self, key, path):
-        message = 'duplicate keys found between tfvars: "%s" in "%s"' % (key, path)
+        message = 'duplicate keys found between tfvars: "%s" in "%s"' % (key, path,)
         super(TFVarsDuplicateKeys, self).__init__(message)
 
 
 class InvalidTFVarsConfig(BaseMimironException):
     def __init__(self, path, error):
-        message = 'error found in tfvars config "%s"\n %s' % (path, error)
+        message = 'error found in tfvars config "%s"\n %s' % (path, error,)
         super(InvalidTFVarsConfig, self).__init__(message)
 
 

@@ -12,7 +12,7 @@ class TestDockerHub(object):
         image_name = 'example-image'
         image_tag = '123123123'
 
-        expected_output = '%s/%s:%s' % (self.auth.org, image_name, image_tag)
-        result = dockerhub.build_image_abspath(self.auth, image_name, image_tag)
+        expected_output = '%s/%s:%s' % (self.auth.org, image_name, image_tag,)
+        result = dockerhub.build_image_abspath(self.auth, image_name, image_tag,)
 
         assert result == expected_output
