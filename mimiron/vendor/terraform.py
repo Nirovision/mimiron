@@ -132,7 +132,7 @@ class TFVarsConfig(object):
         for path, tfvars in self.data.iteritems():
             if group is not None and group != tfvars['group']:
                 continue
-            if tfvars['data'].get(key) is not None:
+            if key in tfvars['data']:
                 return tfvars
         return None
 
