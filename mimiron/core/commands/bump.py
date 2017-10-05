@@ -89,7 +89,12 @@ class Bump(_Command):
             self.config.get('dockerhub')['password'],
             self.config.get('dockerhub')['organization'],
         )
+
         deployment_repo = TFVarsHelpers.find_deployment_repo(service_name, self.config.get('terraformRepositories'))
+        if not deployment_repo:
+            io.err('could not find service %r' % service_name)
+            return None
+
         env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
 
         active_branch = deployment_repo['git'].active_branch.name
