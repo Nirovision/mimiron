@@ -55,19 +55,21 @@ mimiron.py
 usage:
     mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
-    mim (deploy|d) [--show-last=<n>] [--env=<env>] [--no-push]
+    mim (deploy|d) [--show-last=<n>] [--no-push] [--tag] [--empty-commit]
 
 commands:
     (bump|b)         bumps the <service> with an image <artifact>
     (status|st)      shows the currently used artifact id for <env>
-    (deploy|d)       triggers a deploy for an environment --env=<env>
+    (deploy|d)       triggers a deploy a chosen deployment repository
 
 arguments:
     <artifact>       the deployment artifact (Docker image) we are pushing
     <service>        the application we're targeting
-    --env=<env>      the environment we want to change [default: staging]
+    --env=<env>      overrides the default repo environment
     --show-all       show all artifacts for the current service
-    --show-last=<n>  show the last n commits [default: 10]
+    --show-last=<n>  show the last n commits
+    --empty-commit   creates an empty commit on the chosen repository
+    --tag            creates a git tag (git tag -a) on a chosen commit or [--empty-commit]
 
 options:
     --no-push        make local changes without pushing to remote
