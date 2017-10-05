@@ -38,7 +38,7 @@ config_schema = {
                 },
             },
             'required': ['username', 'password', 'organization'],
-        }
+        },
     },
     'required': ['terraformRepositories', 'dockerhub'],
 }
