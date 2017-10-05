@@ -19,7 +19,7 @@ class Bump(_Command):
     MAX_ARTIFACTS_SHOWN = 20
 
     def __init__(self, config, **kwargs):
-        super(self.__class__, self).__init__(config, **kwargs)
+        super(Bump, self).__init__(config, **kwargs)
 
     def _prompt_artifact_selection(self, service_name, artifact_key, deployment_repo, env, artifacts):
         current_image = deployment_repo['tfvars'].get(artifact_key, env)
@@ -64,7 +64,7 @@ class Bump(_Command):
 
         # Truncate artifacts we get from DockerHub to make it more readable.
         if not is_show_all:
-            artifacts = artifacts[:self.__class__.MAX_ARTIFACTS_SHOWN]
+            artifacts = artifacts[:Bump.MAX_ARTIFACTS_SHOWN]
 
         if not artifacts:
             io.err('no artifacts were found for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name))

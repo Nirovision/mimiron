@@ -10,7 +10,7 @@ class Deploy(_Command):
     SHOW_LAST_LIMIT = 20
 
     def __init__(self, config, **kwargs):
-        super(self.__class__, self).__init__(config, **kwargs)
+        super(Deploy, self).__init__(config, **kwargs)
 
     def _prompt_repo_selection(self, deployment_repos):
         io.info('displaying all repositories specified in config')
@@ -38,7 +38,7 @@ class Deploy(_Command):
         table_data = [
             ('id', 'commit id', 'message', 'author', 'committed at',),
         ]
-        limit = self.__class__.MAX_SUMMARY_LIMIT
+        limit = Deploy.MAX_SUMMARY_LIMIT
         commits = []
 
         for i, commit in enumerate(deployment_repo['git'].iter_commits(max_count=show_last_limit), 1):

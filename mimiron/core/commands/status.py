@@ -7,7 +7,7 @@ from ...vendor.git_extensions import extensions as git_ext
 
 class Status(_Command):
     def __init__(self, config, **kwargs):
-        super(self.__class__, self).__init__(config, **kwargs)
+        super(Status, self).__init__(config, **kwargs)
 
     def _format_row(self, index, service_name, artifact):
         image_tag = artifact['image'].split(':')[-1]
