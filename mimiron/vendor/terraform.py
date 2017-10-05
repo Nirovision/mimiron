@@ -41,8 +41,8 @@ class TFVarsConfig(object):
     def find_duplicates(self):
         """Finds duplicates between multiple tfvar config files."""
         duplicates = {}
-        for tfvars in self.data.values():
-            for k in tfvars['data'].keys():
+        for tfvars in self.data.itervalues():
+            for k in tfvars['data'].iterkeys():
                 if duplicates.get(k):
                     raise TFVarsDuplicateKeys(k, self.repo['path'])
         return None
@@ -61,14 +61,66 @@ class TFVarsConfig(object):
                 raise TFVarsMissingConfigFile(path)
 
     def get_services(self):
-        """Retrieves all services found based on tfvar files found in `self.data`."""
+        """Retrieves all services found based on tfvar files found in `self.data`.
+
+        `self.data` is a dictionary in the form:
+
+        >>> data = {
+        ...    'path_1': {
+        ...        'path': 'path_1',
+        ...        'group': 'xxx',
+        ...        'data': {
+        ...            'service_1_image': 'xxx',
+        ...            'service_1_attr_1': 'yyy',
+        ...            'service_1_attr_2': 'zzz',
+        ...            'service_2_image': 'xxx',
+        ...            'service_3_image': 'xxx',
+        ...        },
+        ...    },
+        ...    'path_2': {
+        ...        'path': 'path_2',
+        ...        'group': 'xxx',
+        ...        'data': {
+        ...            'service_4_image': 'xxx',
+        ...            'service_4_attr_1': 'yyy',
+        ...            'service_4_attr_2': 'zzz',
+        ...            'service_5_image': 'xxx',
+        ...        },
+        ...    },
+        ... }
+
+        The result from all of this, should look like:
+
+        >>> result = {
+        ...     'service_1': {
+        ...         'image': 'xxx',
+        ...         'attr_1': 'yyy',
+        ...         'attr_2': 'zzz',
+        ...     },
+        ...     'service_2': {
+        ...         'image': 'xxx',
+        ...     },
+        ...     'service_3': {
+        ...         'image': 'xxx',
+        ...     },
+        ...     'service_4': {
+        ...         'image': 'xxx',
+        ...         'attr_1': 'yyy',
+        ...         'attr_2': 'zzz',
+        ...     },
+        ...     'service_5': {
+        ...         'image': 'xxx',
+        ...     },
+        ... }
+
+        """
         services = {}
-        for tfvars in self.data.values():
+        for tfvars in self.data.itervalues():
             for k in tfvars['data'].iterkeys():
                 if k.endswith('_image'):
                     services[k.replace('_image', '')] = {}
         for service_name, service_data in services.iteritems():
-            for tfvars in self.data.values():
+            for tfvars in self.data.itervalues():
                 for k, v in tfvars['data'].iteritems():
                     if k.startswith(service_name):
                         service_data[k.replace(service_name + '_', '')] = v
