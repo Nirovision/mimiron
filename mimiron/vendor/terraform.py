@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+from collections import defaultdict
 
 from ..exceptions.vendor import TFVarsMissingConfigFile
 from ..exceptions.vendor import InvalidTFVarsConfig
@@ -40,11 +41,12 @@ class TFVarsConfig(object):
 
     def find_duplicates(self):
         """Finds duplicates between multiple tfvar config files."""
-        duplicates = {}
+        duplicates = defaultdict(lambda: defaultdict(bool))
         for tfvars in self.data.itervalues():
             for k in tfvars['data'].iterkeys():
-                if duplicates.get(k):
+                if duplicates[tfvars['group']].get(k):
                     raise TFVarsDuplicateKeys(k, self.repo['path'])
+                duplicates[tfvars['group']][k] = True
         return None
 
     def save(self):
