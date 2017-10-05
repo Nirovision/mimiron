@@ -2,6 +2,7 @@ language: python
 install:
   - pip install -r requirements.txt
   - python setup.py develop
+  - ln -s ./data/example_config.json ~/.mimiron.json
   - mim --help
 script:
   - pep8 ./ --ignore=E501,E701 && python -m pytest
