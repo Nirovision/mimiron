@@ -112,9 +112,9 @@ index-servers =
   mimiron
 
 [mimiron]
-repository=https://pypi.python.org/pypi
-username=xxx
-password=yyy
+repository:https://upload.pypi.org/legacy/
+username:xxx
+password:yyy
 ```
 
 Register this package to the Cheeseshop:
