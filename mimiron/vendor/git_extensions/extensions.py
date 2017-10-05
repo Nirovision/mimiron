@@ -90,7 +90,7 @@ def generate_service_bump_commit_message(repo, service_name, env, tag, author=No
 
 
 @git_failure
-def generate_commit_message(repo, env, author=None):
+def generate_commit_message(repo, env='default', author=None):
     """Generates a generic commit message.
 
     Args:
@@ -151,11 +151,11 @@ def commit_empty_changes(repo, commit_message):
         commit_message (str): The commit message to use
 
     Returns:
-        bool: True if a commit was made, False otherwise
+        git.objects.Commit: The commit that was just created, None if failed
 
     """
     if repo.is_dirty():
-        return False
+        return None
 
     repo.git.commit(
         *shlex.split('--allow-empty -m "%s" --author "%s"' % (commit_message, const.COMMIT_AUTHOR_NAME))
@@ -164,7 +164,7 @@ def commit_empty_changes(repo, commit_message):
 
     io.info('commit message: "%s"' % commit_message.split('\n')[0])
     io.info('created commit: (id) %s' % commit.name_rev)
-    return True
+    return commit
 
 
 @git_failure

@@ -6,12 +6,12 @@ mimiron.py
 usage:
     mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
-    mim (deploy|d) [--show-last=<n>] [--env=<env>] [--no-push]
+    mim (deploy|d) [--show-last=<n>] [--no-push] [--tag] [--empty-commit]
 
 commands:
     (bump|b)         bumps the <service> with an image <artifact>
     (status|st)      shows the currently used artifact id for <env>
-    (deploy|d)       triggers a deploy for an environment --env=<env>
+    (deploy|d)       triggers a deploy a chosen deployment repository
 
 arguments:
     <artifact>       the deployment artifact (Docker image) we are pushing
@@ -19,6 +19,8 @@ arguments:
     --env=<env>      overrides the default repo environment
     --show-all       show all artifacts for the current service
     --show-last=<n>  show the last n commits
+    --empty-commit   creates an empty commit on the chosen repository
+    --tag            creates a git tag (git tag -a) on a chosen commit or [--empty-commit]
 
 options:
     --no-push        make local changes without pushing to remote
@@ -41,8 +43,6 @@ from .core.config import Config
 from .domain import BaseMimironException
 from .domain.commands import UnexpectedCommand
 
-from .core import constants as const
-
 
 def _parse_user_input(args, config):
     if any([args['bump'], args['b']]):
@@ -59,7 +59,8 @@ def _parse_user_input(args, config):
     if any([args['deploy'], args['d']]):
         return deploy.Deploy(
             config,
-            env=args['--env'],
+            is_tag=args['--tag'],
+            is_empty_commit=args['--empty-commit'],
             show_last_limit=args['--show-last'],
             should_push=not args['--no-push']
         )
