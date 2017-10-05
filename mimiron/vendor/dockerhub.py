@@ -27,11 +27,11 @@ class DockerHubAuthentication(object):
 
         try:
             response = requests.post(endpoint, data=payload, headers=headers)
-            if response.status_code == 200:
-                return response.json()['token']
-            raise InvalidDockerHubCredentials
+            if response.status_code != 200:
+                raise InvalidDockerHubCredentials
         except requests.exceptions.ConnectionError:
             raise DockerConnectionError
+        return response.json()['token']
 
     @property
     def token(self):
