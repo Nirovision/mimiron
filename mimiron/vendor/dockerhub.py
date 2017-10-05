@@ -2,8 +2,8 @@
 import requests
 import json
 
-from ..domain.vendor import InvalidDockerHubCredentials
-from ..domain.vendor import DockerConnectionError
+from ..exceptions.vendor import InvalidDockerHubCredentials
+from ..exceptions.vendor import DockerConnectionError
 
 
 class DockerHubAuthentication(object):

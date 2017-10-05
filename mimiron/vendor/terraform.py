@@ -2,9 +2,9 @@
 import os
 import json
 
-from ..domain.vendor import TFVarsMissingConfigFile
-from ..domain.vendor import InvalidTFVarsConfig
-from ..domain.vendor import TFVarsDuplicateKeys
+from ..exceptions.vendor import TFVarsMissingConfigFile
+from ..exceptions.vendor import InvalidTFVarsConfig
+from ..exceptions.vendor import TFVarsDuplicateKeys
 
 __all__ = ['TFVarsConfig', 'TFVarsHelpers']
 

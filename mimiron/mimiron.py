@@ -40,8 +40,8 @@ from .core.commands import status
 from .core.commands import deploy
 from .core.config import Config
 
-from .domain import BaseMimironException
-from .domain.commands import UnexpectedCommand
+from .exceptions import BaseMimironException
+from .exceptions.commands import UnexpectedCommand
 
 
 def _parse_user_input(args, config):

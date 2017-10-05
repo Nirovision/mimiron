@@ -10,10 +10,10 @@ from git import InvalidGitRepositoryError as _InvalidGitRepositoryError
 from git import NoSuchPathError as _NoSuchPathError
 
 from ..schemas.config import config_schema
-from ..domain.config import ConfigLoadError, MalformedConfig
-from ..domain.config import DeploymentRepositoriesNotSpecified
-from ..domain.vendor import InvalidGitRepository
-from ..domain.vendor import NoTFVarsFilesFound
+from ..exceptions.config import ConfigLoadError, MalformedConfig
+from ..exceptions.config import DeploymentRepositoriesNotSpecified
+from ..exceptions.vendor import InvalidGitRepository
+from ..exceptions.vendor import NoTFVarsFilesFound
 
 from ..vendor.terraform import TFVarsConfig
 

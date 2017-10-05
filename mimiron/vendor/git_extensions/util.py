@@ -2,7 +2,7 @@
 from functools import wraps
 
 from git.exc import GitCommandError
-from ...domain.vendor import UnexpectedGitError
+from ...exceptions.vendor import UnexpectedGitError
 
 
 def git_failure(f):

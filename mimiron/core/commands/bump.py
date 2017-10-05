@@ -6,8 +6,8 @@ from . import Command as _Command
 from .. import io
 
 from ..util.time import pretty_print_datetime
-from ...domain.vendor import NoChangesEmptyCommit
-from ...domain.commands import InvalidOperatingBranch
+from ...exceptions.vendor import NoChangesEmptyCommit
+from ...exceptions.commands import InvalidOperatingBranch
 
 from ...vendor import dockerhub
 from ...vendor.git_extensions import extensions as git_ext

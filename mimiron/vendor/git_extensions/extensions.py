@@ -10,7 +10,7 @@ from git import Actor
 from . import helpers
 from .util import git_failure
 
-from ...domain.vendor import FetchRemoteUnknownNextStep
+from ...exceptions.vendor import FetchRemoteUnknownNextStep
 from ...core import io
 from ...core import constants as const
 
