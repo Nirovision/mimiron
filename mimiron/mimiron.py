@@ -69,9 +69,12 @@ def _parse_user_input(args, config):
 
 def main():
     try:
+        args = docopt(__doc__, version=__version__)
+
         config = Config()
         config.init()
-        _parse_user_input(docopt(__doc__, version=__version__), config)
+
+        _parse_user_input(args, config)
     except KeyboardInterrupt:
         pass
     except BaseMimironException as e:
