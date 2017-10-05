@@ -21,30 +21,26 @@ We want to make simple tasks such as bumping an image version simple and Mimiron
 $ pip install mimiron
 ```
 
-Export necessary environment variables to let Mimiron know where your terraform repo is located:
+`mim` requires a configuration file at `~/.mimiron.json` before it can work. Take a look at [./data/example_config.json](./data/example_config.json) for an example.
 
-```bash
-# Path to your Terraform configuration
-export TF_DEPLOYMENT_PATH="~/workspace/terraform"
-
-# Docker username, password and organisation (or account)
-export DOCKER_USERNAME=""
-export DOCKER_PASSWORD=""
-export DOCKER_ORG=""
-```
-
-There are also optional environment variables you can override:
-
-```bash
-export DEFAULT_ENVIRONMENT=staging
-export DEFAULT_GIT_BRANCH=master
-```
+| Root Key | Sub Key / Description | Description
+|-|-|-|
+| terraformRepositories | An array of objects where each object contains configuration for a Terraform repository. |  |
+| | path | The path to a Terraform repository (cannot be relative but may contain ~). |
+| | defaultEnvironemnt | Projects representing multiple environments have a default (e.g. staging, production). |
+| | tagEnvironment | Usually the production environment (tags can trigger production `terraform apply`). |
+| | defaultGitBranch | Some `mim` commands will check if the current branch is this before running. |
+| dockerhub |  |  |
+| | username | The username to your DockerHub account. |
+| | password | The password to your DockerHub account. |
+| | organization | The organization your DockerHub belongs to (username if none). |
 
 ## Assumptions
 
-* Your Terraform config repo has a dir `/terraform/tfvars/` with your tfvars in a JSON file e.g. `/terraform/tfvars/staging.json`
-* Docker image artifacts are stored in the DockerHub registry
-* Docker image artifacts are named `service_name_image` e.g. `web_marketing_image`
+* `mim` requires that you store your Docker image aritfacts on DockerHub. No support for other registries exist at this time.
+* Terraform configuration is expected to exist at `/project/terraform/`.
+* Terraform variables (tfvars) are stored in JSON files inside a directory named `/project/terraform/tfvars/`.
+* Docker image artifacts are named `service_name_image` e.g. `web_marketing_image`.
 
 ## Usage
 
