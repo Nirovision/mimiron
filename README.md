@@ -23,16 +23,16 @@ $ pip install mimiron
 
 `mim` requires a configuration file at `~/.mimiron.json` before it can work. Take a look at [./data/example_config.json](./data/example_config.json) for an example.
 
-| Root Key | Sub Key / Description | Description
+| Root Key | Sub Key | Description
 |-|-|-|
-| terraformRepositories | An array of objects where each object contains configuration for a Terraform repository. |  |
-| | path | The path to a Terraform repository (cannot be relative but may contain ~). |
-| | defaultEnvironemnt | Projects representing multiple environments have a default (e.g. staging, production). |
-| | tagEnvironment | Usually the production environment (tags can trigger production `terraform apply`). |
-| | defaultGitBranch | Some `mim` commands will check if the current branch is this before running. |
-| dockerhub |  |  |
-| | username | The username to your DockerHub account. |
-| | password | The password to your DockerHub account. |
+| terraformRepositories (array<object>) | An array of objects where each object contains configuration for a Terraform repository. |  |
+| | path (string) | The path to a Terraform repository (cannot be relative but may contain ~). |
+| | defaultEnvironment (string) | Projects representing multiple environments have a default (e.g. staging, production). |
+| | tagEnvironment (string) | Usually the production environment (tags can trigger production `terraform apply`). |
+| | defaultGitBranch (string) | Some `mim` commands will check if the current branch is this before running. |
+| dockerhub (object) |  |  |
+| | username (string) | The username to your DockerHub account. |
+| | password (string) | The password to your DockerHub account. |
 | | organization | The organization your DockerHub belongs to (username if none). |
 
 ## Assumptions
