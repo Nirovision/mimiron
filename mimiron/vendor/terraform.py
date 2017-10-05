@@ -10,13 +10,14 @@ __all__ = ['TFVarsConfig', 'TFVarsHelpers']
 
 
 class TFVarsConfig(object):
-    def __init__(self, repo, paths):
+    def __init__(self, repo, paths, load_config=True):
         self.paths = paths
         self.repo = repo
         self.data = {}
 
-        self.load()
-        self._find_duplicates()
+        if load_config:
+            self.load()
+            self.find_duplicates()
 
     def load(self):
         for path in self.paths:
@@ -37,7 +38,7 @@ class TFVarsConfig(object):
             except (TypeError, ValueError) as e:
                 raise InvalidTFVarsConfig(path, e)
 
-    def _find_duplicates(self):
+    def find_duplicates(self):
         """Finds duplicates between multiple tfvar config files."""
         duplicates = {}
         for tfvars in self.data.values():
