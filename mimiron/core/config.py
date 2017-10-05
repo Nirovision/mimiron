@@ -78,6 +78,8 @@ class Config(object):
         tfvars_paths = []
         for root, dirs, files in os.walk(repo_path):
             for f in files:
+                if not f.endswith('.json'):  # skip non-json files.
+                    continue
                 tfvars_path = os.path.join(os.path.abspath(root), f)
                 tfvars_paths.append(tfvars_path)
 
