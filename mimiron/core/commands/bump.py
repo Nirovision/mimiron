@@ -26,7 +26,7 @@ class Bump(_Command):
 
         io.info('found artifacts for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name))
         table_data = [
-            ['id', 'tag name (* = current)', 'created at', 'size'],
+            ('id', 'tag name (* = current)', 'created at', 'size',),
         ]
         for i, artifact in enumerate(artifacts, 1):
             created_at = datetime.strptime(artifact['last_updated'], '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -37,7 +37,7 @@ class Bump(_Command):
             if image_name in current_image:  # indicate the current artifact.
                 image_name += ' *'
 
-            table_data.append([i, image_name, created_at, image_size])
+            table_data.append((str(i), image_name, created_at, image_size,))
         io.print_table(table_data, 'recent artifacts')
 
         # Handle the case where the selected artifact is the current artifact.

@@ -9,7 +9,7 @@ class Status(_Command):
     def __init__(self, config, **kwargs):
         super(self.__class__, self).__init__(config, **kwargs)
 
-    def _format_row(self, artifact):
+    def _format_row(self, index, service_name, artifact):
         image_tag = artifact['image'].split(':')[-1]
         desired_count = int(artifact.get('desired_count', 0))
         if desired_count == 0:
@@ -17,17 +17,17 @@ class Status(_Command):
 
         cpu = artifact.get('cpu', io.add_color('n/a', 'red'))
         memory = artifact.get('memory', io.add_color('n/a', 'red'))
-        return [image_tag, desired_count, cpu, memory]
+        return str(index), service_name, image_tag, desired_count, cpu, memory,
 
     def _build_status_table(self, deployment_repo):
         services = deployment_repo['tfvars'].get_services()
         docker_org = self.config.get('dockerhub')['organization']
         table_data = [
-            ['id', 'name', 'image tag (%s)' % docker_org, 'desired count', 'cpu units', 'memory (mb)'],
+            ('id', 'name', 'image tag (%s)' % docker_org, 'desired count', 'cpu units', 'memory (mb)',),
         ]
         for i, service_name in enumerate(sorted(services.iterkeys()), 1):
             artifact = services[service_name]
-            table_data.append([i, service_name] + self._format_row(artifact))
+            table_data.append(self._format_row(i, service_name, artifact))
         return table_data
 
     def run(self):

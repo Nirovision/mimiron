@@ -15,16 +15,16 @@ class Deploy(_Command):
     def _prompt_repo_selection(self, deployment_repos):
         io.info('displaying all repositories specified in config')
         table_data = [
-            ['id', 'path', 'default environment', 'tag environment', 'default git branch'],
+            ('id', 'path', 'default environment', 'tag environment', 'default git branch',),
         ]
         for i, deployment_repo in enumerate(deployment_repos, 1):
-            table_data.append([
-                i,
+            table_data.append((
+                str(i),
                 deployment_repo['path'],
                 deployment_repo['defaultEnvironment'] or io.add_color('n/a', 'red'),
                 deployment_repo['tagEnvironment'] or io.add_color('n/a', 'red'),
                 deployment_repo['defaultGitBranch'],
-            ])
+            ))
 
         io.print_table(table_data, 'deployment repositories')
         return io.collect_input(
@@ -36,7 +36,7 @@ class Deploy(_Command):
         io.info('displaying @~%s most recent commits for "%s"' % (show_last_limit, deployment_repo['path']))
 
         table_data = [
-            ['id', 'commit id', 'message', 'author', 'committed at'],
+            ('id', 'commit id', 'message', 'author', 'committed at',),
         ]
         limit = self.__class__.MAX_SUMMARY_LIMIT
         commits = []
@@ -45,13 +45,13 @@ class Deploy(_Command):
             message = commit.summary
             message = message[:limit].rstrip() + '...' if len(message) > limit else message
 
-            table_data.append([
-                i,
+            table_data.append((
+                str(i),
                 commit.name_rev.split(' ')[0][:9],
                 message,
                 commit.author.name.strip('<>'),
                 pretty_print_datetime(commit.committed_datetime),
-            ])
+            ))
             commits.append(commit)
         io.print_table(table_data, 'recent commits')
         return io.collect_input('select the commit you want to deploy [q]:', commits)
