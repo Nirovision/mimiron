@@ -17,8 +17,14 @@ We want to make simple tasks such as bumping an image version simple and Mimiron
 
 ## Installation
 
+```bash
+pip install mimiron --upgrade
 ```
-$ pip install mimiron
+
+... or if you're using a Mac (see [here](https://github.com/pypa/pip/issues/3165) why):
+
+```bash
+sudo pip install mimiron --ignore-installed six
 ```
 
 `mim` requires a configuration file at `~/.mimiron.json` before it can work. Take a look at [./data/example_config.json](./data/example_config.json) for an example.
