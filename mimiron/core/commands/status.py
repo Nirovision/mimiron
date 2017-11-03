@@ -19,8 +19,8 @@ class Status(_Command):
         memory = artifact.get('memory', io.add_color('n/a', 'red'))
         return str(index), service_name, image_tag, desired_count, cpu, memory,
 
-    def _build_status_table(self, deployment_repo):
-        services = deployment_repo['tfvars'].get_services()
+    def _build_status_table(self, deployment_repo, env):
+        services = deployment_repo['tfvars'].get_services(env)
         docker_org = self.config.get('dockerhub')['organization']
         table_data = [
             ('id', 'name', 'image tag (%s)' % (docker_org,), 'desired count', 'cpu units', 'memory (mb)',),
@@ -36,8 +36,8 @@ class Status(_Command):
             git_ext.sync_updates(deployment_repo['git'])
             deployment_repo['tfvars'].load()  # sync_updates may have changed tfvars.
 
-            table_data = self._build_status_table(deployment_repo)
             env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
+            table_data = self._build_status_table(deployment_repo, env)
             docker_org = self.config.get('dockerhub')['organization']
             io.info('displaying "%s" active&inactive services on "%s"' % (docker_org, env,))
             io.print_table(table_data, 'current %s artifacts' % (env,))

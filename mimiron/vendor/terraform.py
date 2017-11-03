@@ -62,7 +62,7 @@ class TFVarsConfig(object):
             except IOError:
                 raise TFVarsMissingConfigFile(path)
 
-    def get_services(self):
+    def get_services(self, group):
         """Retrieves all services found based on tfvar files found in `self.data`.
 
         `self.data` is a dictionary in the form:
@@ -117,12 +117,18 @@ class TFVarsConfig(object):
 
         """
         services = {}
+
+        # Finds all possible artifacts that live in all groups
         for tfvars in self.data.itervalues():
             for k in tfvars['data'].iterkeys():
                 if k.endswith('_image'):
                     services[k.replace('_image', '')] = {}
+
+        # Go over all found artifacts then update the artifact attributes.
         for service_name, service_data in services.iteritems():
             for tfvars in self.data.itervalues():
+                if tfvars['group'] and tfvars['group'] != group:
+                    continue
                 for k, v in tfvars['data'].iteritems():
                     if k.startswith(service_name):
                         service_data[k.replace(service_name + '_', '')] = v
