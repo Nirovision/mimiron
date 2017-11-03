@@ -4,7 +4,7 @@
 mimiron.py
 
 usage:
-    mim (bump|b) <service> [--env=<env>] [--no-push] [--show-all]
+    mim (bump|b) <service> [--env=<env>] [--tag] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
     mim (deploy|d) [--show-last=<n>] [--no-push] [--tag] [--empty-commit]
 
@@ -49,6 +49,7 @@ def _parse_user_input(args, config):
         return bump.Bump(
             config,
             env=args['--env'],
+            tag=args['--tag'],
             service=args['<service>'],
             is_show_all=args['--show-all'],
             should_push=not args['--no-push']

@@ -82,6 +82,7 @@ class Bump(_Command):
             return None
 
         env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
+        tag = self.kwargs['tag']
 
         active_branch = deployment_repo['git'].active_branch.name
         if active_branch != deployment_repo['defaultGitBranch']:
@@ -95,7 +96,6 @@ class Bump(_Command):
             env,
             is_show_all,
         )
-
         if artifact is None:  # An artifact wasn't selected, end command.
             return None
 
@@ -119,7 +119,7 @@ class Bump(_Command):
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
 
-        if env and env == deployment_repo['tagEnvironment'] and did_commit:
+        if env and env == deployment_repo['tagEnvironment'] and did_commit and tag:
             git_ext.tag_commit(
                 deployment_repo['git'],
                 git_ext.generate_deploy_commit_tag(),
