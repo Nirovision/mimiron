@@ -109,7 +109,6 @@ class TestTFVarsConfig(object):
         }
         assert result == expected_output
 
-
     def test_get_services_empty_config(self):
         config = TFVarsConfig(None, [], load_config=False)
         config.data = {}
