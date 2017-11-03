@@ -55,9 +55,9 @@ sudo pip install mimiron --ignore-installed six
 mimiron.py
 
 usage:
-    mim (bump|b) <service> [--env=<env>] [--latest] [--no-push] [--show-all]
+    mim (bump|b) <service> [--env=<env>] [-t] [--no-push] [--show-all]
     mim (status|st) [--env=<env>]
-    mim (deploy|d) [--show-last=<n>] [--no-push] [--tag] [--empty-commit]
+    mim (deploy|d) [--show-last=<n>] [--no-push] [-t] [--empty-commit]
 
 commands:
     (bump|b)         bumps the <service> with an image <artifact>
@@ -71,7 +71,7 @@ arguments:
     --show-all       show all artifacts for the current service
     --show-last=<n>  show the last n commits
     --empty-commit   creates an empty commit on the chosen repository
-    --tag            creates a git tag (git tag -a) on a chosen commit or [--empty-commit]
+    -t --tag         creates a git tag (git tag -a) on a chosen commit or [--empty-commit]
 
 options:
     --no-push        make local changes without pushing to remote
