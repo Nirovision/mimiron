@@ -117,6 +117,52 @@ class TestTFVarsConfig(object):
         expected_output = {}
         assert result == expected_output
 
+    def test_get_service_names_should_give_all_services(self):
+        config = TFVarsConfig(None, [], load_config=False)
+        config.data = {
+            '/path/repo/1': {
+                'path': '/path/repo/1',
+                'git': None,
+                'group': 'aaa',
+                'data': {
+                    'my_service_1_image': 'aaa',
+                    'my_service_1_desired_count': 'aaa',
+                    'my_service_1_random_variable': 'aaa',
+                    'my_service_2_image': 'aaa',
+                    'my_service_2_desired_count': 'aaa',
+                    'my_service_2_random_variable': 'aaa',
+                    'my_service_3_image': 'aaa',
+                    'my_service_3_desired_count': 'aaa',
+                    'my_service_3_random_variable': 'aaa',
+                    'my_service_4_image': 'aaa',
+                    'my_service_4_desired_count': 'aaa',
+                    'my_service_4_random_variable': 'aaa',
+                    'my_service_5_image': 'aaa',
+                    'my_service_5_desired_count': 'aaa',
+                    'my_service_5_random_variable': 'aaa',
+                },
+            }
+        }
+
+        result = sorted(config.get_service_names())
+        expected_output = sorted(['my_service_1', 'my_service_2', 'my_service_3', 'my_service_4', 'my_service_5'])
+        assert result == expected_output
+
+    def test_get_service_names_should_give_zero_serices(self):
+        config = TFVarsConfig(None, [], load_config=False)
+        config.data = {
+            '/path/repo/1': {
+                'path': '/path/repo/1',
+                'git': None,
+                'group': 'aaa',
+                'data': {},
+            }
+        }
+
+        result = config.get_service_names()
+        expected_output = []
+        assert result == expected_output
+
 
 class TestTFVarsHelpers(object):
     def test_normalize_service_name_normal_case(self):

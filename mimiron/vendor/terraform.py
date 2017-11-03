@@ -116,25 +116,27 @@ class TFVarsConfig(object):
         ... }
 
         """
-        services = {}
+        services = defaultdict(dict)
+        service_names = self.get_service_names()
 
-        # Finds all possible artifacts that live in all groups
-        for tfvars in self.data.itervalues():
-            for k in tfvars['data'].iterkeys():
-                if k.endswith('_image'):
-                    services[k.replace('_image', '')] = {}
-
-        # Go over all found artifacts then update the artifact attributes.
-        for service_name, service_data in services.iteritems():
+        for service_name in service_names:
             for tfvars in self.data.itervalues():
                 if tfvars['group'] and tfvars['group'] != group:
                     continue
                 for k, v in tfvars['data'].iteritems():
                     if k.startswith(service_name):
-                        service_data[k.replace(service_name + '_', '')] = v
+                        services[service_name][k.replace(service_name + '_', '')] = v
 
         # Clean up any services that don't have any data (due to mismatched groups).
         return {k: v for k, v in services.iteritems() if v}
+
+    def get_service_names(self):
+        service_names = []
+        for tfvars in self.data.itervalues():
+            for k in tfvars['data'].iterkeys():
+                if k.endswith('_image'):
+                    service_names.append(k.replace('_image', ''))
+        return service_names
 
     def find(self, key, group):
         for path, tfvars in self.data.iteritems():
@@ -168,8 +170,7 @@ class TFVarsHelpers(object):
     def find_deployment_repo(cls, service, repos):
         """Given the `service` name and a list of deployment repos, determine the host repo."""
         service_name = cls.normalize_service_name(service)
-
         for repo in repos:
-            if service_name in repo['tfvars'].get_services():
+            if service_name in repo['tfvars'].get_service_names():
                 return repo
         return None
