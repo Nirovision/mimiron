@@ -56,6 +56,16 @@ class TestTFVarsConfig(object):
                     'my_service_1_random_variable': 'bbb',
                 },
             },
+            '/path/repo/3': {
+                'path': '/path/repo/3',
+                'git': None,
+                'group': 'ccc',
+                'data': {
+                    'my_service_2_image': 'ccc',
+                    'my_service_2_desired_count': 'ccc',
+                    'my_service_2_random_variable': 'ccc',
+                },
+            },
         }
 
         result = config.get_services('aaa')
@@ -65,6 +75,40 @@ class TestTFVarsConfig(object):
             }
         }
         assert result == expected_output
+
+    def test_get_services_filter_empty_services(self):
+        config = TFVarsConfig(None, [], load_config=False)
+        config.data = {
+            '/path/repo/1': {
+                'path': '/path/repo/1',
+                'git': None,
+                'group': 'aaa',
+                'data': {
+                    'my_service_1_image': 'aaa',
+                    'my_service_1_desired_count': 'aaa',
+                    'my_service_1_random_variable': 'aaa',
+                },
+            },
+            '/path/repo/2': {
+                'path': '/path/repo/2',
+                'git': None,
+                'group': 'bbb',
+                'data': {
+                    'my_service_2_image': 'bbb',
+                    'my_service_2_desired_count': 'bbb',
+                    'my_service_2_random_variable': 'bbb',
+                },
+            },
+        }
+
+        result = config.get_services('aaa')
+        expected_output = {
+            'my_service_1': {
+                'image': 'aaa', 'random_variable': 'aaa', 'desired_count': 'aaa'
+            }
+        }
+        assert result == expected_output
+
 
     def test_get_services_empty_config(self):
         config = TFVarsConfig(None, [], load_config=False)

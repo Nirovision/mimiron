@@ -132,7 +132,9 @@ class TFVarsConfig(object):
                 for k, v in tfvars['data'].iteritems():
                     if k.startswith(service_name):
                         service_data[k.replace(service_name + '_', '')] = v
-        return services
+
+        # Clean up any services that don't have any data (due to mismatched groups).
+        return {k: v for k, v in services.iteritems() if v}
 
     def find(self, key, group):
         for path, tfvars in self.data.iteritems():
