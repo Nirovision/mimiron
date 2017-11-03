@@ -119,12 +119,14 @@ class Bump(_Command):
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
 
-        if env and env == deployment_repo['tagEnvironment'] and did_commit and tag:
+        if env and env == deployment_repo['tagEnvironment'] and tag:
             git_ext.tag_commit(
                 deployment_repo['git'],
                 git_ext.generate_deploy_commit_tag(),
                 commit_message
             )
+        elif env != deployment_repo['tagEnvironment'] and tag:
+            io.warn('cannot tag bump operation when env is NOT "%s"' % deployment_repo['tagEnvironment'])
 
         if should_push:
             git_ext.push_commits(deployment_repo['git'])
