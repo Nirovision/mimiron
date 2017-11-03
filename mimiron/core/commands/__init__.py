@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import time
+from .. import io
 
 
 class Command(object):
@@ -6,11 +8,11 @@ class Command(object):
         self.kwargs = kwargs
         self.config = config
 
-        self.validate_and_configure()
+        start_time = time.time()
         self.run()
+        total_time = (time.time() - start_time) * 1000
 
-    def validate_and_configure(self):
-        pass
+        io.info(u'\U0001F916  Mimiron completed operation in %0.3fms' % total_time)
 
     def run(self):
         raise NotImplementedError

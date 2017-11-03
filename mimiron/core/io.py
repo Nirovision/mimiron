@@ -71,7 +71,6 @@ def collect_input(prompt, selection):
             return selection[id_]
         except (ValueError, TypeError, IndexError):
             continue
-    return None
 
 # @see: http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html
 U_ERROR = add_color('[error]', 'red')
