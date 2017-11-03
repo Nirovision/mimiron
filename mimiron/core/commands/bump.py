@@ -47,18 +47,7 @@ class Bump(_Command):
             return None
         return selected_artifact
 
-    @classmethod
-    def _prompt_latest_confirmation(cls, artifacts):
-        latest_artifact = artifacts[0]
-        tag = latest_artifact['name']
-
-        io.info('latest artifact version: %s' % (tag,))
-        input_ = io.collect_single_input('are you sure (latest: %s)? [y/n/q]:' % (tag,))
-        if input_ not in ['y', None]:
-            return None
-        return latest_artifact
-
-    def _get_artifact(self, service_name, artifact_key, deployment_repo, dockerhub_auth, env, is_show_all, is_latest):
+    def _get_artifact(self, service_name, artifact_key, deployment_repo, dockerhub_auth, env, is_show_all):
         io.info('retrieving image tags for "%s" from dockerhub' % (service_name,))
         artifacts = dockerhub.list_image_tags(dockerhub_auth, service_name)
 
@@ -70,8 +59,6 @@ class Bump(_Command):
             io.err('no artifacts were found for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name,))
             return None
 
-        if is_latest:
-            return self._prompt_latest_confirmation(artifacts)
         return self._prompt_artifact_selection(service_name, artifact_key, deployment_repo, env, artifacts)
 
     def run(self):
@@ -80,7 +67,6 @@ class Bump(_Command):
         artifact_key = TFVarsHelpers.get_artifact_key(service_name_normalized)
 
         should_push = self.kwargs['should_push']
-        is_latest = self.kwargs['is_latest']
         is_show_all = self.kwargs['is_show_all']
 
         io.info('authenticating "%s" against dockerhub' % (self.config.get('dockerhub')['organization'],))
@@ -108,7 +94,6 @@ class Bump(_Command):
             dockerhub_auth,
             env,
             is_show_all,
-            is_latest,
         )
 
         if artifact is None:  # An artifact wasn't selected, end command.
