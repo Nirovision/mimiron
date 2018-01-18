@@ -7,8 +7,8 @@ from datetime import datetime
 
 from git import Actor
 
-from . import helpers
-from .util import git_failure
+from mimiron.vendor.git_extensions import helpers
+from mimiron.vendor.git_extensions.util import git_failure
 
 from mimiron.exceptions.vendor import FetchRemoteUnknownNextStep
 from mimiron.core import io
