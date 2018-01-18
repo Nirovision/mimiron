@@ -2,7 +2,7 @@
 from functools import wraps
 
 from git.exc import GitCommandError
-from ...exceptions.vendor import UnexpectedGitError
+from mimiron.exceptions.vendor import UnexpectedGitError
 
 
 def git_failure(f):

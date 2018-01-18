@@ -9,13 +9,13 @@ from git import Repo
 from git import InvalidGitRepositoryError as _InvalidGitRepositoryError
 from git import NoSuchPathError as _NoSuchPathError
 
-from ..schemas.config import config_schema
-from ..exceptions.config import ConfigLoadError, MalformedConfig
-from ..exceptions.config import DeploymentRepositoriesNotSpecified
-from ..exceptions.vendor import InvalidGitRepository
-from ..exceptions.vendor import NoTFVarsFilesFound
+from mimiron.schemas.config import config_schema
+from mimiron.exceptions.config import ConfigLoadError, MalformedConfig
+from mimiron.exceptions.config import DeploymentRepositoriesNotSpecified
+from mimiron.exceptions.vendor import InvalidGitRepository
+from mimiron.exceptions.vendor import NoTFVarsFilesFound
 
-from ..vendor.terraform import TFVarsConfig
+from mimiron.vendor.terraform import TFVarsConfig
 
 __all__ = ['Config']
 

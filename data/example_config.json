@@ -3,13 +3,11 @@
     {
       "path": "~/workspace/deployments",
       "defaultEnvironment": "staging",
-      "tagEnvironment": "production",
       "defaultGitBranch": "master"
     },
     {
       "path": "~/workspace/deployments-analytics",
       "defaultEnvironment": null,
-      "tagEnvironment": null,
       "defaultGitBranch": "master"
     }
   ],

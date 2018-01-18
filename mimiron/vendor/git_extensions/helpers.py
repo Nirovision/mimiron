@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from git import Actor
-from .util import git_failure
+from mimiron.vendor.git_extensions.util import git_failure
 
 
 @git_failure
