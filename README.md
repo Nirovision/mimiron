@@ -34,7 +34,6 @@ sudo pip install mimiron --ignore-installed six
 | terraformRepositories(array<object>) | | |
 | | path(string) | The path to a Terraform repository (cannot be relative but may contain ~). |
 | | defaultEnvironment(string) | Projects representing multiple environments have a default (e.g. staging, production). |
-| | tagEnvironment(string) | Usually the production environment (tags can trigger production `terraform apply`). |
 | | defaultGitBranch(string) | Some `mim` commands will check if the current branch is this before running. |
 | dockerhub(object) | | |
 | | username(string) | The username to your DockerHub account. |
@@ -55,82 +54,58 @@ sudo pip install mimiron --ignore-installed six
 mimiron.py
 
 usage:
-    mim (bump|b) <service> [--env=<env>] [-t] [--no-push] [--show-all]
-    mim (status|st) [--env=<env>]
-    mim (deploy|d) [--show-last=<n>] [--no-push] [-t] [--empty-commit]
+    mim (bump|b) <service> [--env=<env>] [--no-push]
+    mim (status|s) [--env=<env>]
+    mim (deploy|d) [--env=<env>] [--no-push] [--empty-commit]
 
 commands:
-    (bump|b)         bumps the <service> with an image <artifact>
-    (status|st)      shows the currently used artifact id for <env>
-    (deploy|d)       triggers a deploy a chosen deployment repository
+    (bump|b)        bumps the <service> with an image <artifact>
+    (status|s)      shows the currently used artifact id for <env>
+    (deploy|d)      triggers a deploy a chosen deployment repository
 
 arguments:
-    <artifact>       the deployment artifact (Docker image) we are pushing
-    <service>        the application we're targeting
-    --env=<env>      overrides the default repo environment
-    --show-all       show all artifacts for the current service
-    --show-last=<n>  show the last n commits
-    --empty-commit   creates an empty commit on the chosen repository
-    -t --tag         creates a git tag (git tag -a) on a chosen commit or [--empty-commit]
+    <artifact>      the deployment artifact (Docker image) we are pushing
+    <service>       the application we're targeting
+    --env=<env>     overrides the default repo environment
+    --empty-commit  creates an empty commit on the chosen repository
 
 options:
-    --no-push        make local changes without pushing to remote
-    --latest         use the latest artifact when updating a service
-
-    -h --help        shows this
-    -v --version     shows version
+    --no-push       make local changes without pushing to remote
+    -h --help       shows this
+    -v --version    shows version
 ```
 
 ## Development
 
-Clone the project:
-
 ```bash
-git clone git@github.com:ImageIntelligence/mimiron.git
+git clone git@github.com:ImageIntelligence/mimiron.git && cd mimiron/
+mkvirtualenv mimiron && workon mimiron
+
+python setup.py develop && pip install -r requirements.txt
+
+python mimiron.py --help
 ```
 
-Setup your virtualenv:
+## Testing
 
 ```bash
-mkvirtualenv mimiron
-```
-
-Attach mim to your shell:
-
-```bash
-python setup.py develop
-pip install -r requirements.txt
-```
-
-Testing:
-
-```bash
-python -m pytest
+python -m pytest test/
 ```
 
 ## Deployment
 
-Create a `~/.pypirc` and replace the username and password with real credentials:
-
-```
-[distutils]
-index-servers =
-  mimiron
-
-[mimiron]
-repository:https://upload.pypi.org/legacy/
-username:xxx
-password:yyy
+```bash
+pip install twine
+python setup.py sdist
+twine upload dist/mimiron-0.4.0.tar.gz
 ```
 
-Register this package to the Cheeseshop:
+**NOTE:** You might get warnings around having a misconfigured `~/.pypirc` file. Create one if you haven't and make sure it contains:
 
 ```
-$ python setup.py register -r mimiron
+[pypi]
+username = <username>
+password = <password>
 ```
 
-Build a distributable and upload:
-
-```
-$ python setup.py sdist upload -r mimiron
-```
+Ask another developer for the username and password.
