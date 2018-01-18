@@ -18,6 +18,12 @@ class Bump(_Command):
     MAX_ARTIFACTS_SHOWN = 25
 
     def __init__(self, config, **kwargs):
+        self.should_push = kwargs['should_push']
+        self.service_name = kwargs['service']
+        self.env = kwargs['env']
+        service_name_normalized = TFVarsHelpers.normalize_service_name(self.service_name)
+        self.artifact_key = TFVarsHelpers.get_artifact_key(service_name_normalized)
+
         super(Bump, self).__init__(config, **kwargs)
 
     def _prompt_artifact_selection(self, service_name, artifact_key, deployment_repo, env, artifacts):
@@ -46,73 +52,69 @@ class Bump(_Command):
             return None
         return selected_artifact
 
-    def _get_artifact(self, service_name, artifact_key, deployment_repo, dockerhub_auth, env):
-        io.info('retrieving image tags for "%s" from dockerhub' % (service_name,))
-        artifacts = dockerhub.list_image_tags(dockerhub_auth, service_name)
+    def _get_artifact(self, deployment_repo, dockerhub_auth, env):
+        io.info('retrieving image tags for "%s" from dockerhub' % (self.service_name,))
+        artifacts = dockerhub.list_image_tags(dockerhub_auth, self.service_name)
         artifacts = artifacts[:Bump.MAX_ARTIFACTS_SHOWN]
 
         if not artifacts:
-            io.err('no artifacts were found for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name,))
+            io.err('no artifacts found "%s/%s"' % (self.config.get('dockerhub')['organization'], self.service_name,))
             return None
-        return self._prompt_artifact_selection(service_name, artifact_key, deployment_repo, env, artifacts)
+        return self._prompt_artifact_selection(self.service_name, self.artifact_key, deployment_repo, env, artifacts)
+
+    def _commit_bump(self, dockerhub_auth, deployment_repo, artifact, env):
+        image_abspath = dockerhub.build_image_abspath(dockerhub_auth, self.service_name, artifact['name'])
+        io.info('updating "%s"' % (image_abspath,))
+        deployment_repo['tfvars'].set(self.artifact_key, image_abspath, env)
+        deployment_repo['tfvars'].save()
+
+        commit_message = git_ext.generate_service_bump_commit_message(
+            deployment_repo['git'], self.service_name, env, artifact['name'],
+        )
+
+        did_commit = git_ext.commit_changes(deployment_repo['git'], commit_message)
+        if not did_commit:
+            raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
+        if env == 'production':
+            git_ext.tag_commit(deployment_repo['git'], git_ext.generate_deploy_commit_tag(), commit_message)
 
     def run(self):
-        service_name = self.kwargs['service']
-        service_name_normalized = TFVarsHelpers.normalize_service_name(service_name)
-        artifact_key = TFVarsHelpers.get_artifact_key(service_name_normalized)
-
-        should_push = self.kwargs['should_push']
-
         io.info('authenticating "%s" against dockerhub' % (self.config.get('dockerhub')['organization'],))
+
+        # Authenticate against DockerHub for artifact access.
         dockerhub_auth = dockerhub.DockerHubAuthentication(
             self.config.get('dockerhub')['username'],
             self.config.get('dockerhub')['password'],
             self.config.get('dockerhub')['organization'],
         )
 
-        deployment_repo = TFVarsHelpers.find_deployment_repo(service_name, self.config.get('terraformRepositories'))
+        # Determine the deployment repo we want to make changes to.
+        deployment_repo = TFVarsHelpers.find_deployment_repo(
+            self.service_name, self.config.get('terraformRepositories')
+        )
         if not deployment_repo:
-            io.err('could not find service %r' % (service_name,))
+            io.err('could not find service %r' % (self.service_name,))
             return None
 
-        env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
-
+        # Determine the environment and safe guard based on active branch.
+        env = self.env or deployment_repo['defaultEnvironment']
         active_branch = deployment_repo['git'].active_branch.name
         if active_branch != deployment_repo['defaultGitBranch']:
             raise InvalidOperatingBranch(active_branch)
 
-        artifact = self._get_artifact(
-            service_name,
-            artifact_key,
-            deployment_repo,
-            dockerhub_auth,
-            env,
-        )
+        # Select the artifact we want to bump with.
+        artifact = self._get_artifact(deployment_repo, dockerhub_auth, env)
         if artifact is None:  # An artifact wasn't selected, end command.
             return None
 
         git_ext.sync_updates(deployment_repo['git'])
         deployment_repo['tfvars'].load()  # Reload tfvars in case the sync introduced new changes.
 
-        image_abspath = dockerhub.build_image_abspath(
-            dockerhub_auth,
-            service_name,
-            artifact['name'],
-        )
-        io.info('updating "%s"' % (image_abspath,))
-        deployment_repo['tfvars'].set(artifact_key, image_abspath, env)
-        deployment_repo['tfvars'].save()
+        # Update deployment repo and bump artifact.
+        self._commit_bump(dockerhub_auth, deployment_repo, artifact, env)
 
-        commit_message = git_ext.generate_service_bump_commit_message(
-            deployment_repo['git'], service_name, env, artifact['name']
-        )
-        did_commit = git_ext.commit_changes(deployment_repo['git'], commit_message)
-        if not did_commit:
-            raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
-
-        if env == 'production':
-            git_ext.tag_commit(deployment_repo['git'], git_ext.generate_deploy_commit_tag(), commit_message)
-        if should_push:
+        # Push changes up to GitHub to trigger changes in the build pipeline.
+        if self.should_push:
             git_ext.push_commits(deployment_repo['git'])
         else:
             io.warn('commit to tfvars was NOT pushed to remote!')
