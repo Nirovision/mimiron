@@ -10,9 +10,9 @@ from git import Actor
 from . import helpers
 from .util import git_failure
 
-from ...exceptions.vendor import FetchRemoteUnknownNextStep
-from ...core import io
-from ...core import constants as const
+from mimiron.exceptions.vendor import FetchRemoteUnknownNextStep
+from mimiron.core import io
+from mimiron.core import constants as const
 
 
 @git_failure

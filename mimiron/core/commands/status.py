@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from . import Command as _Command
-from .. import io
-
-from ...vendor.git_extensions import extensions as git_ext
+from mimiron.core.commands import Command as _Command
+from mimiron.core import io
+from mimiron.vendor.git_extensions import extensions as git_ext
 
 
 class Status(_Command):

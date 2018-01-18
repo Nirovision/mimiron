@@ -24,17 +24,17 @@ options:
     -h --help       shows this
     -v --version    shows version
 """
-from . import __version__
+from mimiron import __version__
 from docopt import docopt
 
-from .core import io
-from .core.commands import bump
-from .core.commands import status
-from .core.commands import deploy
-from .core.config import Config
+from mimiron.core import io
+from mimiron.core.commands import bump
+from mimiron.core.commands import status
+from mimiron.core.commands import deploy
+from mimiron.core.config import Config
 
-from .exceptions import BaseMimironException
-from .exceptions.commands import UnexpectedCommand
+from mimiron.exceptions import BaseMimironException
+from mimiron.exceptions.commands import UnexpectedCommand
 
 
 def _parse_user_input(args, config):

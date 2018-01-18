@@ -2,17 +2,16 @@
 import humanize
 from datetime import datetime
 
-from . import Command as _Command
-from .. import io
+from mimiron.core.commands import Command as _Command
+from mimiron.core import io
 
-from ..util.time import pretty_print_datetime
-from ...exceptions.vendor import NoChangesEmptyCommit
-from ...exceptions.commands import InvalidOperatingBranch
+from mimiron.core.util.time import pretty_print_datetime
+from mimiron.exceptions.vendor import NoChangesEmptyCommit
+from mimiron.exceptions.commands import InvalidOperatingBranch
 
-from ...vendor import dockerhub
-from ...vendor.git_extensions import extensions as git_ext
-
-from ...vendor.terraform import TFVarsHelpers
+from mimiron.vendor import dockerhub
+from mimiron.vendor.git_extensions import extensions as git_ext
+from mimiron.vendor.terraform import TFVarsHelpers
 
 
 class Bump(_Command):

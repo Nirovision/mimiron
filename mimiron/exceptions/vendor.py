@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from . import BaseMimironException
+from mimiron.exceptions import BaseMimironException
 from git import InvalidGitRepositoryError as _InvalidGitRepositoryError
 
 

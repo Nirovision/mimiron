@@ -2,8 +2,8 @@
 import requests
 import json
 
-from ..exceptions.vendor import InvalidDockerHubCredentials
-from ..exceptions.vendor import DockerConnectionError
+from mimiron.exceptions.vendor import InvalidDockerHubCredentials
+from mimiron.exceptions.vendor import DockerConnectionError
 
 
 class DockerHubAuthentication(object):

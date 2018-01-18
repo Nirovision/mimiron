@@ -3,9 +3,9 @@ import os
 import json
 from collections import defaultdict
 
-from ..exceptions.vendor import TFVarsMissingConfigFile
-from ..exceptions.vendor import InvalidTFVarsConfig
-from ..exceptions.vendor import TFVarsDuplicateKeys
+from mimiron.exceptions.vendor import TFVarsMissingConfigFile
+from mimiron.exceptions.vendor import InvalidTFVarsConfig
+from mimiron.exceptions.vendor import TFVarsDuplicateKeys
 
 __all__ = ['TFVarsConfig', 'TFVarsHelpers']
 

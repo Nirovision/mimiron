@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from . import Command as _Command
-from .. import io
-from ..util.time import pretty_print_datetime
-from ...vendor.git_extensions import extensions as git_ext
+from mimiron.core.commands import Command as _Command
+from mimiron.core import io
+from mimiron.core.util.time import pretty_print_datetime
+from mimiron.vendor.git_extensions import extensions as git_ext
 
 
 class Deploy(_Command):
     MAX_SUMMARY_LIMIT = 50
-    SHOW_LAST_LIMIT = 20
 
     def __init__(self, config, **kwargs):
         super(Deploy, self).__init__(config, **kwargs)
@@ -31,7 +30,7 @@ class Deploy(_Command):
             self.config.get('terraformRepositories'),
         )
 
-    def _prompt_commit_selection(self, deployment_repo, show_last_limit=Deploy.SHOW_LAST_LIMIT):
+    def _prompt_commit_selection(self, deployment_repo, show_last_limit=50):
         io.info('displaying @~%s most recent commits for "%s"' % (show_last_limit, deployment_repo['path'],))
 
         table_data = [

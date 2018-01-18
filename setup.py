@@ -40,7 +40,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'mim=mimiron.mimiron:main',
+            'mim=mimiron:main',
         ],
     },
 )
