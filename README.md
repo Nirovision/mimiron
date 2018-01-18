@@ -83,7 +83,7 @@ mkvirtualenv mimiron && workon mimiron
 
 python setup.py develop && pip install -r requirements.txt
 
-python mimiron.py --help
+python mimiron/command_line.py --help
 ```
 
 ## Testing
