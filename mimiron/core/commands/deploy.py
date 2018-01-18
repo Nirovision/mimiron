@@ -15,14 +15,13 @@ class Deploy(_Command):
     def _prompt_repo_selection(self, deployment_repos):
         io.info('displaying all repositories specified in config')
         table_data = [
-            ('id', 'path', 'default environment', 'tag environment', 'default git branch',),
+            ('id', 'path', 'default environment', 'default git branch',),
         ]
         for i, deployment_repo in enumerate(deployment_repos, 1):
             table_data.append((
                 str(i),
                 deployment_repo['path'],
                 deployment_repo['defaultEnvironment'] or io.add_color('n/a', 'red'),
-                deployment_repo['tagEnvironment'] or io.add_color('n/a', 'red'),
                 deployment_repo['defaultGitBranch'],
             ))
 
@@ -32,7 +31,7 @@ class Deploy(_Command):
             self.config.get('terraformRepositories'),
         )
 
-    def _prompt_commit_selection(self, deployment_repo, show_last_limit):
+    def _prompt_commit_selection(self, deployment_repo, show_last_limit=Deploy.SHOW_LAST_LIMIT):
         io.info('displaying @~%s most recent commits for "%s"' % (show_last_limit, deployment_repo['path'],))
 
         table_data = [
@@ -57,9 +56,8 @@ class Deploy(_Command):
         return io.collect_input('select the commit you want to deploy [q]:', commits)
 
     def run(self):
-        show_last_limit = int(self.kwargs['show_last_limit'] or self.SHOW_LAST_LIMIT)
         should_push = self.kwargs['should_push']
-        is_tag = self.kwargs['is_tag']
+        env = self.kwargs['env']
         is_empty_commit = self.kwargs['is_empty_commit']
 
         deployment_repo = self._prompt_repo_selection(self.config.get('terraformRepositories'))
@@ -73,12 +71,12 @@ class Deploy(_Command):
         if is_empty_commit:
             commit = git_ext.commit_empty_changes(deployment_repo['git'], commit_message)
         else:
-            commit = self._prompt_commit_selection(deployment_repo, show_last_limit)
+            commit = self._prompt_commit_selection(deployment_repo)
         if not commit:
             io.info('no commit created or specified, exiting deploy')
             return None
 
-        if is_tag:
+        if env == 'production':
             git_ext.tag_commit(
                 deployment_repo['git'],
                 git_ext.generate_deploy_commit_tag(),
@@ -86,8 +84,8 @@ class Deploy(_Command):
                 ref=commit
             )
 
-        if should_push:
-            git_ext.push_commits(deployment_repo['git'])
-        else:
-            io.warn('commit to tfvars was NOT pushed to remote!')
-            io.warn("it's your responsibility to bundle changes and explicitly push")
+        # if should_push:
+        #     git_ext.push_commits(deployment_repo['git'])
+        # else:
+        #     io.warn('commit to tfvars was NOT pushed to remote!')
+        #     io.warn("it's your responsibility to bundle changes and explicitly push")

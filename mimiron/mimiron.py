@@ -4,33 +4,26 @@
 mimiron.py
 
 usage:
-    mim (bump|b) <service> [--env=<env>] [-t] [--no-push] [--show-all]
-    mim (status|st) [--env=<env>]
-    mim (deploy|d) [--show-last=<n>] [--no-push] [-t] [--empty-commit]
+    mim (bump|b) <service> [--env=<env>] [--no-push]
+    mim (status|s) [--env=<env>]
+    mim (deploy|d) [--env=<env>] [--no-push] [--empty-commit]
 
 commands:
-    (bump|b)         bumps the <service> with an image <artifact>
-    (status|st)      shows the currently used artifact id for <env>
-    (deploy|d)       triggers a deploy a chosen deployment repository
+    (bump|b)        bumps the <service> with an image <artifact>
+    (status|s)      shows the currently used artifact id for <env>
+    (deploy|d)      triggers a deploy a chosen deployment repository
 
 arguments:
-    <artifact>       the deployment artifact (Docker image) we are pushing
-    <service>        the application we're targeting
-    --env=<env>      overrides the default repo environment
-    --show-all       show all artifacts for the current service
-    --show-last=<n>  show the last n commits
-    --empty-commit   creates an empty commit on the chosen repository
-    -t --tag         creates a git tag (git tag -a) on a chosen commit or [--empty-commit]
+    <artifact>      the deployment artifact (Docker image) we are pushing
+    <service>       the application we're targeting
+    --env=<env>     overrides the default repo environment
+    --empty-commit  creates an empty commit on the chosen repository
 
 options:
-    --no-push        make local changes without pushing to remote
-    --latest         use the latest artifact when updating a service
-
-    -h --help        shows this
-    -v --version     shows version
+    --no-push       make local changes without pushing to remote
+    -h --help       shows this
+    -v --version    shows version
 """
-from __future__ import print_function
-
 from . import __version__
 from docopt import docopt
 
@@ -48,20 +41,17 @@ def _parse_user_input(args, config):
     if any([args['bump'], args['b']]):
         return bump.Bump(
             config,
-            env=args['--env'],
-            tag=args['--tag'],
             service=args['<service>'],
-            is_show_all=args['--show-all'],
+            env=args['--env'],
             should_push=not args['--no-push']
         )
-    if any([args['status'], args['st']]):
+    if any([args['status'], args['s']]):
         return status.Status(config, env=args['--env'])
     if any([args['deploy'], args['d']]):
         return deploy.Deploy(
             config,
-            is_tag=args['--tag'],
+            env=args['--env'],
             is_empty_commit=args['--empty-commit'],
-            show_last_limit=args['--show-last'],
             should_push=not args['--no-push']
         )
     raise UnexpectedCommand

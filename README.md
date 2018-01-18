@@ -11,7 +11,7 @@ Mimiron is a CLI tool that aims provide a better workflow when manging Terraform
 
 When all of your Terraform config is completely modular, the only sane way to manage variables is to store them inside a `variables.json` file and pass that along when you run `terraform apply -var-file=variables.json`... but where do you store `variables.json` and how can you easily make changes?
 
-Our approach is to store non-sensitive variables inside the same repository as our Terraform config. Sensitive variables like your AWS secret and master db password are stored elsewhere and pulled in via environment variables e.g. `TF_VAR_aws_access_key`. Mimiron does **not** manage sensitive variables for you.
+Our approach is to store non-sensitive variables inside the same repository as our Terraform config. Sensitive variables like your AWS secret and master db password are stored elsewhere then accessed later whether it be via AWS KMS or Hashicorp Vault. The purpose of this project is to manage non-sensitive variables.
 
 We want to make simple tasks such as bumping an image version simple and Mimiron is a small CLI tool that does that. Mimiron provides a few commands to help automate the cumbersome tasks away.
 

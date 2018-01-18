@@ -16,7 +16,7 @@ from ...vendor.terraform import TFVarsHelpers
 
 
 class Bump(_Command):
-    MAX_ARTIFACTS_SHOWN = 20
+    MAX_ARTIFACTS_SHOWN = 25
 
     def __init__(self, config, **kwargs):
         super(Bump, self).__init__(config, **kwargs)
@@ -47,18 +47,14 @@ class Bump(_Command):
             return None
         return selected_artifact
 
-    def _get_artifact(self, service_name, artifact_key, deployment_repo, dockerhub_auth, env, is_show_all):
+    def _get_artifact(self, service_name, artifact_key, deployment_repo, dockerhub_auth, env):
         io.info('retrieving image tags for "%s" from dockerhub' % (service_name,))
         artifacts = dockerhub.list_image_tags(dockerhub_auth, service_name)
-
-        # Truncate artifacts we get from DockerHub to make it more readable.
-        if not is_show_all:
-            artifacts = artifacts[:Bump.MAX_ARTIFACTS_SHOWN]
+        artifacts = artifacts[:Bump.MAX_ARTIFACTS_SHOWN]
 
         if not artifacts:
             io.err('no artifacts were found for "%s/%s"' % (self.config.get('dockerhub')['organization'], service_name,))
             return None
-
         return self._prompt_artifact_selection(service_name, artifact_key, deployment_repo, env, artifacts)
 
     def run(self):
@@ -67,7 +63,6 @@ class Bump(_Command):
         artifact_key = TFVarsHelpers.get_artifact_key(service_name_normalized)
 
         should_push = self.kwargs['should_push']
-        is_show_all = self.kwargs['is_show_all']
 
         io.info('authenticating "%s" against dockerhub' % (self.config.get('dockerhub')['organization'],))
         dockerhub_auth = dockerhub.DockerHubAuthentication(
@@ -82,7 +77,6 @@ class Bump(_Command):
             return None
 
         env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
-        tag = self.kwargs['tag']
 
         active_branch = deployment_repo['git'].active_branch.name
         if active_branch != deployment_repo['defaultGitBranch']:
@@ -94,7 +88,6 @@ class Bump(_Command):
             deployment_repo,
             dockerhub_auth,
             env,
-            is_show_all,
         )
         if artifact is None:  # An artifact wasn't selected, end command.
             return None
@@ -115,19 +108,11 @@ class Bump(_Command):
             deployment_repo['git'], service_name, env, artifact['name']
         )
         did_commit = git_ext.commit_changes(deployment_repo['git'], commit_message)
-
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
 
-        if env and env == deployment_repo['tagEnvironment'] and tag:
-            git_ext.tag_commit(
-                deployment_repo['git'],
-                git_ext.generate_deploy_commit_tag(),
-                commit_message
-            )
-        elif env != deployment_repo['tagEnvironment'] and tag:
-            io.warn('cannot tag bump operation when env is NOT "%s"' % deployment_repo['tagEnvironment'])
-
+        if env == 'production':
+            git_ext.tag_commit(deployment_repo['git'], git_ext.generate_deploy_commit_tag(), commit_message)
         if should_push:
             git_ext.push_commits(deployment_repo['git'])
         else:
