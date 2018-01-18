@@ -2,6 +2,7 @@
 from mimiron.core.commands import Command as _Command
 from mimiron.core import io
 from mimiron.core.util.time import pretty_print_datetime
+from mimiron.exceptions.commands import InvalidOperatingBranch
 from mimiron.vendor.git_extensions import extensions as git_ext
 
 
@@ -88,6 +89,12 @@ class Deploy(_Command):
         deployment_repo = self._prompt_repo_selection(self.config.get('terraformRepositories'))
         if not deployment_repo:
             return None
+
+        # Determine the environment and safe guard based on active branch.
+        env = self.env or deployment_repo['defaultEnvironment']
+        active_branch = deployment_repo['git'].active_branch.name
+        if active_branch != deployment_repo['defaultGitBranch']:
+            raise InvalidOperatingBranch(active_branch)
 
         git_ext.sync_updates(deployment_repo['git'])
         deployment_repo['tfvars'].load()  # sync_updates may have changed tfvars.
