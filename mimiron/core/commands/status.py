@@ -6,6 +6,7 @@ from mimiron.vendor.git_extensions import extensions as git_ext
 
 class Status(_Command):
     def __init__(self, config, **kwargs):
+        self.env = kwargs['env']
         super(Status, self).__init__(config, **kwargs)
 
     def _format_row(self, index, service_name, artifact):
@@ -35,7 +36,7 @@ class Status(_Command):
             git_ext.sync_updates(deployment_repo['git'])
             deployment_repo['tfvars'].load()  # sync_updates may have changed tfvars.
 
-            env = self.kwargs['env'] or deployment_repo['defaultEnvironment']
+            env = self.env or deployment_repo['defaultEnvironment']
             table_data = self._build_status_table(deployment_repo, env)
             docker_org = self.config.get('dockerhub')['organization']
             io.info('displaying "%s" active&inactive services on "%s"' % (docker_org, env,))
