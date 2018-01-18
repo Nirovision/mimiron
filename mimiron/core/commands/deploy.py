@@ -90,8 +90,7 @@ class Deploy(_Command):
         if not deployment_repo:
             return None
 
-        # Determine the environment and safe guard based on active branch.
-        env = self.env or deployment_repo['defaultEnvironment']
+        # Safe guard commits based on active branch.
         active_branch = deployment_repo['git'].active_branch.name
         if active_branch != deployment_repo['defaultGitBranch']:
             raise InvalidOperatingBranch(active_branch)
