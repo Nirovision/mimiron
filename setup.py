@@ -7,7 +7,7 @@ from mimiron import __version__
 setup(
     name='mimiron',
     version=__version__,
-    description="Mimiron is a CLI tool whose purpose is to provide a better workflow when manging tfvars",
+    description="Easily manage your tfvars config via Mimiron",
     url='https://github.com/ImageIntelligence/mimiron',
 
     author='David Vuong',
