@@ -30,7 +30,7 @@ setup(
         'docopt==0.6.2',
         'terminaltables==3.1.0',
         'jsonschema==2.6.0',
-        'GitPython==2.1.1',
+        'GitPython==2.1.8',
         'requests==2.13.0',
         'humanize==0.5.1',
         'python-dateutil==2.6.0',
