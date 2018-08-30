@@ -61,7 +61,7 @@ def sync_updates(repo, push=False):
 
 
 @git_failure
-def generate_service_bump_commit_message(repo, service_name, env, tag, author=None):
+def generate_service_bump_commit_message(repo, service_name, env, tag, author=None, skip_ci=False):
     """Generates an appropriate service bump commit message.
 
     Args:
@@ -70,6 +70,7 @@ def generate_service_bump_commit_message(repo, service_name, env, tag, author=No
         env (str): The infrastructure you're bumping against
         tag (str): The service/app artifact tag (e.g. Docker tag)
         author (Optional[git.objects.Actor]): Commit author, host user by default
+        skip_ci (boolean): True to add [skip ci] to commit message, False otherwise
 
     Returns:
         str: The formatted bump commit message
@@ -84,6 +85,7 @@ def generate_service_bump_commit_message(repo, service_name, env, tag, author=No
         'service-name: %s' % (service_name,),
         'service-tag: %s' % (tag,),
         'environment: %s' % (env_name,),
+        'skip-ci: True [skip ci]' if skip_ci else 'skip-ci: False',
         '\n'
         'Committed via Mimiron v%s (https://github.com/ImageIntelligence/mimiron)' % (__version__,),
     ])
