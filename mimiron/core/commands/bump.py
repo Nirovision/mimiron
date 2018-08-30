@@ -63,19 +63,20 @@ class Bump(_Command):
         return self._prompt_artifact_selection(self.service_name, self.artifact_key, deployment_repo, env, artifacts)
 
     def _commit_bump(self, dockerhub_auth, deployment_repo, artifact, env):
+        is_production = env == 'production'
         image_abspath = dockerhub.build_image_abspath(dockerhub_auth, self.service_name, artifact['name'])
         io.info('updating "%s"' % (image_abspath,))
         deployment_repo['tfvars'].set(self.artifact_key, image_abspath, env)
         deployment_repo['tfvars'].save()
 
         commit_message = git_ext.generate_service_bump_commit_message(
-            deployment_repo['git'], self.service_name, env, artifact['name'],
+            deployment_repo['git'], self.service_name, env, artifact['name'], skip_ci=is_production
         )
 
         did_commit = git_ext.commit_changes(deployment_repo['git'], commit_message)
         if not did_commit:
             raise NoChangesEmptyCommit('"%s" has nothing to commit' % (deployment_repo['git'].working_dir,))
-        if env == 'production':
+        if is_production:
             git_ext.tag_commit(deployment_repo['git'], git_ext.generate_deploy_commit_tag(), commit_message)
 
     def run(self):
