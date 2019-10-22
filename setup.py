@@ -31,7 +31,7 @@ setup(
         'terminaltables==3.1.0',
         'jsonschema==2.6.0',
         'GitPython==2.1.8',
-        'requests==2.13.0',
+        'requests==2.20.0',
         'humanize==0.5.1',
         'python-dateutil==2.6.0',
     ],
